@@ -1,0 +1,24 @@
+# Para ma sure nga dili ta mag libog sa atoang project mag set lang ta ug uniformity ug rules
+
+- Make sure if mag add ug new file ang name is specific kung unsa ni siya.
+    Example: UserController.php, Dashboard.php, DashboardCSS.css, Dashboard.js
+- Ang variable names pud make it specific kung para asa ni siya.
+    Example: 
+    PHP: $money, $income
+    HTML, CSS: class = "Header", id = "Footer", class = "backBtn", id = "nextBtn"
+- Before updating any changes sa code make sure to always double check if there's any errors or bugs pa before pushing sa github.
+    GitHub Cmds:
+    - git pull --rebase origin main
+        : Make sure to pull first before starting to code to make sure nga naa mo files or updated codes
+    - git status
+        : Makita ngari kung unsa ang gi modify recently
+    - git add .
+        : If ganahan ka nga kani nga specific file is to be ready for the next update
+    - git push origin main
+        : E update ang changes sa github
+
+    If ganahan mo unya na mag pull, mag code samo then follow this format
+    git add . / if specific ra nga file git add fileName.php
+    git commit -m "Describe changes"
+    git pull --rebase origin main  
+    git push origin main
