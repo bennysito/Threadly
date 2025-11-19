@@ -94,8 +94,8 @@
 <p class="ml-2 ">Categories</p>
   <div class="grid grid-cols-10 grid-rows-2 gap-4 p-4">
 
-  <div class="border border-gray-300 h-20 h-20"><img src="Images/Design-sem-nome-2-1-1000x1251.jpg" class="object-contain" alt="_blank"></div>
-  <div class="border border-gray-300 h-20 h-20"></div>
+  <div class="border border-gray-300 h-20 flex items-center justify-center"><img src="Images/Jacket.jpg" class=" h-full w-full object-contain" alt="_blank"></div>
+  <div class="border border-gray-300 h-20 "></div>
   <div class="border border-gray-300 h-20 h-20"></div>
   <div class="border border-gray-300 h-20 h-20"></div>
   <div class="border border-gray-300 h-20 h-20"></div>
