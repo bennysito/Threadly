@@ -17,7 +17,7 @@
 
     <!-- Logo kaotng Threaldy-->
     <a href="#" class="flex items-center flex-shrink-0">
-      <img src="logo.png" alt="Logo" class="h-16 w-auto">
+      <img src="Images//logo.png" alt="Logo" class="h-16 w-auto">
       <span class="text-xl sm:text-3xl font-semibold ml-2">Threadly</span>
     </a>
 
@@ -73,7 +73,7 @@
 
       <div class="relative">
         <button id="profileBtn" class="flex items-center rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <img src="avatar_blank.png" class="w-8 h-8 rounded-full" alt="Profile">
+          <img src="Images/avatar_blank.png" class="w-8 h-8 rounded-full" alt="Profile">
         </button>
         <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-10">
           <a href="#" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
