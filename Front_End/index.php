@@ -89,6 +89,36 @@
 
   </div>
 
+<!--Table para sa categories-->
+
+<p class="ml-2 ">Categories</p>
+  <div class="grid grid-cols-10 grid-rows-2 gap-4 p-4">
+
+  <div class="border border-gray-300 h-20 h-20"><img src="Images/Design-sem-nome-2-1-1000x1251.jpg" class="object-contain" alt="_blank"></div>
+  <div class="border border-gray-300 h-20 h-20"></div>
+  <div class="border border-gray-300 h-20 h-20"></div>
+  <div class="border border-gray-300 h-20 h-20"></div>
+  <div class="border border-gray-300 h-20 h-20"></div>
+  <div class="border border-gray-300 h-20 h-20"></div>
+  <div class="border border-gray-300 h-20 h-20"></div>
+  <div class="border border-gray-300 h-20 h-20"></div>
+  <div class="border border-gray-300 h-20 h-20"></div>
+  <div class="border border-gray-300 h-20 h-20"></div>
+  <div class="border border-gray-300 h-20 h-20"></div>
+  <div class="border border-gray-300 h-20 h-20"></div>
+  <div class="border border-gray-300 h-20 h-20"></div>
+  <div class="border border-gray-300 h-20 h-20"></div>
+  <div class="border border-gray-300 h-20 h-20"></div>
+  <div class="border border-gray-300 h-20 h-20"></div>
+  <div class="border border-gray-300 h-20 h-20"></div>
+  <div class="border border-gray-300 h-20 h-20"></div>
+  <div class="border border-gray-300 h-20 h-20"></div>
+  <div class="border border-gray-300 h-20 h-20"></div>
+
+ 
+  </div>
+  </div>
+
   <!-- para mobile-->
   <div id="mobileMenu" class="hidden md:hidden bg-white border-t px-4 py-2 space-y-1">
     <a href="#" class="block text-gray-700 hover:text-blue-500">Products</a>
