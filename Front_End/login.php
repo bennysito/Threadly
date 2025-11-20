@@ -1,0 +1,31 @@
+<?php
+require_once "../Back_End/Models/Users.php";
+
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+    $user = new User();
+
+    $loginAccount = $user->login(
+        $_POST['username'],
+        $_POST['user_password']
+    );
+
+    if($loginAccount){
+        echo "<script><alert>Login successful</alert></script>";
+    }
+}
+?>
+
+<html>
+    <head>
+        <title>
+            Login
+        </title>
+    </head>
+    <body>
+        <form action="" method = "POST">
+            <input type="text" name="username" id="username"><br>
+            <input type="password" name="user_password" id="password"><br>
+            <button type="submit">Log-in</button>
+        </form>
+    </body>
+</html>

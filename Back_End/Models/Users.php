@@ -30,5 +30,28 @@ public function register($first_name, $last_name, $username, $password, $email, 
     $databaseStatement->close();
     return $database_insert;
 }
+
+public function login($username, $user_password){
+   $databaseStatement = $this->db->prepare("SELECT id, username, user_password FROM users WHERE username = ? LIMIT 1");
+
+    if (!$databaseStatement) {
+        error_log("Prepare failed: " . $this->db->threadly_connect->error);
+        return false;
     }
+
+    $databaseStatement->bind_param("s", $username);
+    $databaseStatement->execute();
+
+    $usernameLocated = $databaseStatement->get_result();
+
+    if($usernameLocated->num_rows === 1){
+        $user = $usernameLocated->fetch_assoc();
+
+        if(password_verify($user_password, $user['user_password'])){
+            return $user;
+        }
+        return False;
+    }
+}
+}
 ?>
