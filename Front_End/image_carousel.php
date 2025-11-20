@@ -40,7 +40,7 @@
 
     <div class="swiper-slide">
       <a href="https://samtu43.github.io/Sam_chanel/">
-      <img src="Images/jacket_hoodie.png" alt="Character" class="w-full h-full object-cover rounded-lg shadow-lg">
+      <img src="Images/panti.png" alt="Character" class="w-full h-full object-cover rounded-lg shadow-lg">
       </a>
     </div>
     <div class="swiper-slide">
