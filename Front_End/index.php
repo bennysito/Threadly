@@ -12,7 +12,7 @@
 </head>
 <body class="bg-white">
 
-<nav class="bg-white border-b-2 border-gray-200 shadow-sm">
+<nav class="bg-white border-b-2 border-gray-300 shadow-sm">
   <div class="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center justify-between gap-2">
 
     <!-- Logo kaotng Threaldy-->
@@ -88,11 +88,7 @@
     </div>
 
   </div>
-  <br>
-  <p class="ml-2 text-3xl">Categories</p>
-  <div>
-<?php require "image_carousel.php";?>
-</div>
+  
 <!--Table para sa categories-->
 <!--
 <p class="ml-2 ">Categories</p>
@@ -130,6 +126,11 @@
     <a href="#" class="block text-gray-700 hover:text-blue-500">Help</a>
   </div>
 </nav>
+<br>
+  <p class="ml-2 text-3xl">Categories</p>
+  <div>
+<?php require "image_carousel.php";?>
+</div>
 
 <script>
   const profileBtn = document.getElementById('profileBtn');
