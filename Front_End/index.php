@@ -88,9 +88,12 @@
     </div>
 
   </div>
-
+  <p class="ml-2 text-3xl">Categories</p>
+  <div>
+<?php require "image_carousel.php";?>
+</div>
 <!--Table para sa categories-->
-
+<!--
 <p class="ml-2 ">Categories</p>
   <div class="grid grid-cols-10 grid-rows-2 gap-4 p-4">
 
@@ -118,7 +121,7 @@
  
   </div>
   </div>
-
+-->
   <!-- para mobile-->
   <div id="mobileMenu" class="hidden md:hidden bg-white border-t px-4 py-2 space-y-1">
     <a href="#" class="block text-gray-700 hover:text-blue-500">Products</a>
