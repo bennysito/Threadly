@@ -45,7 +45,7 @@ h1 { margin-bottom: 20px; }
 </head>
 <body>
 
-<h1>Category for <?= htmlspecialchars($categoryName) ?></h1>
+<h1>Categor for <?= htmlspecialchars($categoryName) ?></h1>
 
 <div class="product-grid">
     <?php foreach($products as $product): ?>
