@@ -17,7 +17,7 @@
 
     <!-- Logo kaotng Threaldy-->
     <a  href="https://samtu43.github.io/Sam_chanel/" class="flex items-center flex-shrink-0">
-      <img src="Images//logo.png" alt="Logo" class="h-16 w-auto">
+      <img src="Images//logo.png" alt="Logo" class="h-16 w-auto ml-5/6">
       <span class="text-xl sm:text-3xl font-semibold ml-2">Threadly</span>
     </a>
 
