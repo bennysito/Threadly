@@ -22,7 +22,7 @@
     </a>
 
     <!-- Search bar -->
-    <div class="flex-1 min-w-0">
+    <div class="flex-1 min-w-0 ml-20">
       <div class="relative">
         <span class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -39,9 +39,9 @@
 
     <!-- Products,Notification,ug Help -->
     <div class="hidden md:flex items-center gap-6 ml-4">
-      <a href="#" class="text-gray-700 hover:text-blue-500 font-medium">Products</a>
+      <a href="https://shattereddisk.github.io/rickroll/rickroll.mp4" class="text-gray-700 hover:text-amber-500 font-medium">Products</a>
     
-      <a href="#" class="flex items-center text-gray-700 hover:text-blue-500 gap-1 font-medium">
+      <a href="#" class="flex items-center  hover:text-amber-500 gap-1 font-medium">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
              stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
           <path stroke-linecap="round" stroke-linejoin="round"
@@ -50,22 +50,22 @@
         Notification
       </a>
       <!--message icon-->
-        <a><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <a href="https://shattereddisk.github.io/rickroll/rickroll.mp4" class="flex items-center hover:text-amber-500"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
   <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
 </svg>
 </a>
 <!--cart icon-->
-      <a><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+      <a href="https://shattereddisk.github.io/rickroll/rickroll.mp4" class="flex items-center hover:text-amber-500 "><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
   <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
 </svg>
 </a>
 <!--heart icon-->
- <a href=""class="flex items-center text-gray-700 hover:text-secondary gap-1 font-medium"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+ <a href="https://shattereddisk.github.io/rickroll/rickroll.mp4"class="flex items-center text-gray-700 hover:text-amber-500 font-medium"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
   <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
 </svg>
 </a>
 <!-- question mark icon-->
-      <a href="#" class="flex items-center text-gray-700 hover:text-blue-500 gap-1 font-medium">
+      <a href="https://shattereddisk.github.io/rickroll/rickroll.mp4" class="flex items-center text-gray-700 hover:text-amber-500 font-medium">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
              stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
           <path stroke-linecap="round" stroke-linejoin="round"
@@ -91,7 +91,7 @@
       </button>
 
       <div class="relative">
-        <button id="profileBtn" class="flex items-center rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <button id="profileBtn" class="flex items-center rounded-full focus:outline-none focus:ring-2 focus:ring-white hover:ring-amber-500">
           <img src="Images/avatar_blank.png" class="w-8 h-8 rounded-full" alt="Profile">
         </button>
         <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-10">
