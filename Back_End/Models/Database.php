@@ -3,8 +3,8 @@
 class Database{
     private $host = "localhost";
     private $user = "root";
-    private $pass = "";
-    private $database = "threadly";
+    private $pass = "Samert43";
+    private $database = "threadly_db";
 
     public $threadly_connect;
     function __construct(){

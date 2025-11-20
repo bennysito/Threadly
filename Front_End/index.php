@@ -17,7 +17,7 @@
 
     <!-- Logo kaotng Threaldy-->
     <a  href="https://samtu43.github.io/Sam_chanel/" class="flex items-center flex-shrink-0">
-      <img src="Images//logo.png" alt="Logo" class="h-16 w-auto ml-5/6">
+      <img src="Images/logo.png" alt="Logo" class="h-16 w-auto ml-5/6">
       <span class="text-xl sm:text-3xl font-semibold ml-2">Threadly</span>
     </a>
 
@@ -39,9 +39,9 @@
 
     <!-- Products,Notification,ug Help -->
     <div class="hidden md:flex items-center gap-6 ml-4">
-      <a href="https://samtu43.github.io/Sam_chanel/" class="text-gray-700 hover:text-amber-500 font-medium">Products</a>
+      
     
-      <a href="#" class="flex items-center  hover:text-amber-500 gap-1 font-medium">
+      <a href="https://samtu43.github.io/Sam_chanel/" class="flex items-center  hover:text-amber-500 gap-1 font-medium">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
              stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
           <path stroke-linecap="round" stroke-linejoin="round"
@@ -146,12 +146,13 @@
   </div>
 </nav>
 
-<!--image curved carousel-->
+
 <br>
  <div>
   <p class="ml-2 text-3xl">Categories</p>
  
-<?php require "image_carousel.php";?>
+<?php require "Category_carousel.php";?>
+<!--reuse balik-->
 </div>
 
 <script>
