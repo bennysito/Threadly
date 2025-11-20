@@ -1,16 +1,16 @@
 <?php
 require_once __DIR__ . "/../Back_End/Models/Categories.php";
 
-// Get category from URL
+
 $categoryName = isset($_GET['category']) ? $_GET['category'] : "Unknown";
 
-// Dummy products for now
+//--static ni siya ako rani usbon puhon
 $products = [
-    ["name" => "Product 1", "image" => "panti.png"],
-    ["name" => "Product 2", "image" => "baggy_pants.png"],
-    ["name" => "Product 3", "image" => "underwear_women.png"],
-    ["name" => "Product 4", "image" => "jacket_hoodie.png"],
-    ["name" => "Product 5", "image" => "panti.png"],
+    ["name" => "Jacket", "image" => "panti.png"],
+    ["name" => "Sweater", "image" => "baggy_pants.png"],
+    ["name" => "Pants", "image" => "underwear_women.png"],
+    ["name" => "Brief", "image" => "jacket_hoodie.png"],
+    ["name" => "Pjama 5", "image" => "panti.png"],
 ];
 ?>
 
@@ -45,7 +45,7 @@ h1 { margin-bottom: 20px; }
 </head>
 <body>
 
-<h1>Products in <?= htmlspecialchars($categoryName) ?></h1>
+<h1>Category for <?= htmlspecialchars($categoryName) ?></h1>
 
 <div class="product-grid">
     <?php foreach($products as $product): ?>
