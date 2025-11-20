@@ -4,7 +4,7 @@
     <!--di pa ni final-->
     
     <div class="swiper-slide">
-      <img src="Images/baggy_pants.png" alt="Character" class="w-full h-full object-cover rounded-lg shadow-lg">
+      <img src="Images/panti.png" alt="Character" class="w-full h-full object-cover rounded-lg shadow-lg">
     </div>
     <div class="swiper-slide">
       <img src="Images/baggy_pants.png" alt="Character" class="w-full h-full object-cover rounded-lg shadow-lg">
