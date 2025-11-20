@@ -10,9 +10,9 @@
   body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
 </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-white">
 
-<nav class="bg-white border-b shadow-sm">
+<nav class="bg-white border-b-2 border-gray-200 shadow-sm">
   <div class="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center justify-between gap-2">
 
     <!-- Logo kaotng Threaldy-->
@@ -88,6 +88,7 @@
     </div>
 
   </div>
+  <br>
   <p class="ml-2 text-3xl">Categories</p>
   <div>
 <?php require "image_carousel.php";?>

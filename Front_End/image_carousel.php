@@ -4,19 +4,19 @@
     <!--di pa ni final-->
     
     <div class="swiper-slide">
-      <img src="Images/Jacket.jpg" alt="Character" class="w-full h-full object-cover rounded-lg shadow-lg">
+      <img src="Images/baggy_pants.png" alt="Character" class="w-full h-full object-cover rounded-lg shadow-lg">
     </div>
     <div class="swiper-slide">
-      <img src="Images/Jacket.jpg" alt="Character" class="w-full h-full object-cover rounded-lg shadow-lg">
+      <img src="Images/baggy_pants.png" alt="Character" class="w-full h-full object-cover rounded-lg shadow-lg">
     </div>
     <div class="swiper-slide">
-      <img src="Images/pants.png" alt="Character" class="w-full h-full object-cover rounded-lg shadow-lg">
+      <img src="Images/baggy_pants.png" alt="Character" class="w-full h-full object-cover rounded-lg shadow-lg">
     </div>
     <div class="swiper-slide">
-      <img src="Images/pants.png" alt="Character" class="w-full h-full object-cover rounded-lg shadow-lg">
+      <img src="Images/baggy_pants.png" alt="Character" class="w-full h-full object-cover rounded-lg shadow-lg">
     </div>
     <div class="swiper-slide">
-      <img src="Images/Jacket.jpg" alt="Character" class="w-full h-full object-cover rounded-lg shadow-lg">
+      <img src="Images/baggy_pants.png" alt="Character" class="w-full h-full object-cover rounded-lg shadow-lg">
     </div>
     <div class="swiper-slide">
       <img src="Images/baggy_pants.png" alt="Character" class="w-full h-full object-cover rounded-lg shadow-lg">
@@ -29,10 +29,10 @@
       <img src="Images/jacket_hoodie.png" alt="Character" class="w-full h-full object-cover rounded-lg shadow-lg">
     </div>
     <div class="swiper-slide">
-      <img src="Images/Jacket.jpg" alt="Character" class="w-full h-full object-cover rounded-lg shadow-lg">
+      <img src="Images/jacket_hoodie.png" alt="Character" class="w-full h-full object-cover rounded-lg shadow-lg">
     </div>
     <div class="swiper-slide">
-      <img src="Images/Jacket.jpg" alt="Character" class="w-full h-full object-cover rounded-lg shadow-lg">
+      <img src="Images/jacket_hoodie.png" alt="Character" class="w-full h-full object-cover rounded-lg shadow-lg">
     </div>
   </div>
 
