@@ -5,8 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Threadly</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Chewy&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
+  .chewy-font{
+    font-family: 'Chewy', cursive;
+    font-size: 3rem;
+    font-weight: 400;
+  }  
   .custom-inter {
   font-family: 'Inter', sans-serif;
 }
@@ -15,6 +21,14 @@
     height:auto;
   }
   body { font-family: 'Inter', sans-serif; background-color: #f8f9fa;  }
+  .logo-scale{
+    display: inline-block;
+    transform: scale(1.5);
+    transform-origin:left;
+    margin-left: -30px;
+    will-change: transform;
+    
+  }
 </style>
 </head>
 <body class="bg-white">
@@ -24,8 +38,8 @@
 
     <!-- Logo kaotng Threaldy-->
     <a  href="https://samtu43.github.io/Sam_chanel/" class="flex items-center flex-shrink-0">
-      <img src="Images/logo.png" alt="Logo" class="h-16 w-auto ml-5/6">
-      <span class="text-xl sm:text-3xl font-semibold ml-2">Threadly</span>
+      <img src="Images/Threadly_logo.png" alt="Logo" class="h-16 w-auto ml-5/6 logo-scale">
+      <span class="chewy-font ml-6">Threadly</span>
     </a>
 
     <!-- Search bar -->
@@ -154,7 +168,9 @@
 </nav>
 
 
-
+<div>
+  <img src="Images/Threadly_Event.png" alt="blank">
+</div>
  <div class="container mx-auto py-8">
   
   <!-- CATEGORIES-->

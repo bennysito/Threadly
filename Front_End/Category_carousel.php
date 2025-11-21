@@ -59,9 +59,9 @@ const categorySwiper = new Swiper(".categorySwiper", {
   effect: "coverflow",
   grabCursor: true, 
   centeredSlides: true,
-  slidesPerView: 'auto',   // keeps dynamic sizing
-  loop: true,               // circular
-  spaceBetween: 10,         // reduce gaps
+  slidesPerView: 'auto',   
+  loop: true,               
+  spaceBetween: 10,         
   coverflowEffect: {
     rotate: 10,
     stretch: 0,
