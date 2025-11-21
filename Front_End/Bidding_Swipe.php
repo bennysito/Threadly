@@ -4,8 +4,9 @@ $products = [
     ['name' => 'Blue Hoodie', 'image' => 'Images/jacket_hoodie.png', 'top' => true, 'price' => 950],
     ['name' => 'White Sneakers', 'image' => 'Images/jacket_hoodie.png', 'top' => true, 'price' => 1800],
 ];
+
 ?>
-//static
+<!--static sa karon kay wapay seller database-->
 <div class="swiper biddingSwiper">
   <div class="swiper-wrapper">
     <?php foreach($products as $prod): ?>
