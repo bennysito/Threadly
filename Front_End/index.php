@@ -33,7 +33,7 @@
 </head>
 <body class="bg-white">
 
-<nav class="bg-white border-b-2 border-gray-200 shadow-sm">
+<nav class="bg-white  shadow-sm">
   <div class="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center justify-between gap-2">
 
     <!-- Logo kaotng Threaldy-->
