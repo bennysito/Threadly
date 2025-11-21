@@ -7,7 +7,14 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-  body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
+  .custom-inter {
+  font-family: 'Inter', sans-serif;
+}
+
+  html{
+    height:auto;
+  }
+  body { font-family: 'Inter', sans-serif; background-color: #f8f9fa;  }
 </style>
 </head>
 <body class="bg-white">
@@ -147,13 +154,23 @@
 </nav>
 
 
-<br>
- <div>
-  <p class="ml-2 text-3xl">Categories</p>
- 
-<?php require "Category_carousel.php";?>
-<!--reuse balik-->
+
+ <div class="container mx-auto py-8">
+  
+  <!-- CATEGORIES-->
+  <p class="ml-2 text-3xl font-semibold italic custom-inter mt-0">CATEGORIES</p>
+  <div>
+    <?php require "Category_carousel.php"; ?>
+  </div>
+
+  <!-- BIDDING DEAL-->
+  <p class="ml-2 text-3xl font-semibold italic custom-inter mb-6 ">BIDDING DEALS</p>
+  <div class="mb-20">
+    <?php require "Bidding_Swipe.php"; ?>
+  </div>
+
 </div>
+
 
 <script>
   const profileBtn = document.getElementById('profileBtn');

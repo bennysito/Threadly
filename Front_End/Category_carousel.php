@@ -6,7 +6,7 @@ $categories = $categoryObj->getAllCategories();
 $totalSlides = count($categories);
 ?>
 
-<div class="swiper mySwiper">
+<div class="swiper categorySwiper">
   <div class="swiper-wrapper">
     <?php foreach($categories as $cat): ?>
       <div class="swiper-slide">
@@ -33,37 +33,38 @@ $totalSlides = count($categories);
 <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 
 <style>
-.swiper-slide {
-    width: 150px !important;
-    height: 200px !important;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    overflow: hidden;
-    background: #e0e0e0;
+.categorySwiper{padding-left:0;padding-right:0}
+.categorySwiper .swiper-wrapper{padding-right:0}
+.categorySwiper .swiper-slide {
+  width: 190px !important;
+  height: 200px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #e0e0e0;
+  box-sizing: border-box;
 }
-.swiper-slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 10px;
+.categorySwiper .swiper-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
 }
 </style>
 
 <script>
-const totalSlides = <?= $totalSlides ?>;
-const swiper = new Swiper(".mySwiper", {
+const categorySwiper = new Swiper(".categorySwiper", {
   effect: "coverflow",
-  grabCursor: true,
+  grabCursor: true, 
   centeredSlides: true,
-  slidesPerView: 'auto',
-  loop: false,
-  initialSlide: Math.floor(totalSlides / 2),
-  spaceBetween: 20,
+  slidesPerView: 'auto',   // keeps dynamic sizing
+  loop: true,               // circular
+  spaceBetween: 10,         // reduce gaps
   coverflowEffect: {
-    rotate: 50,
-    stretch: 20,
+    rotate: 10,
+    stretch: 0,
     depth: 200,
     modifier: 1,
     slideShadows: true,

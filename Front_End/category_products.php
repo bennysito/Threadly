@@ -28,18 +28,36 @@ h1 { margin-bottom: 20px; }
     flex-wrap: wrap;
     gap: 20px;
 }
-.product-item {
-    border: 1px solid #ccc;
-    padding: 10px;
-    width: 150px;
-    text-align: center;
-    border-radius: 8px;
+.product-card {
+    width: 16rem; 
+    background: #fff;
+    border: 1px solid #e5e7eb; 
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    overflow: hidden;
 }
-.product-item img {
+.product-card .image-area {
     width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 5px;
+    height: 10rem; 
+    background: #f3f4f6; 
+}
+.product-card .image-area img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.product-card .card-body {
+    padding: 0.75rem;
+}
+.product-card .price {
+    margin-top: 0.25rem;
+    font-weight: 700;
+    color: #111827; 
+}
+.product-card .meta {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: #6b7280; 
 }
 </style>
 </head>
@@ -49,9 +67,15 @@ h1 { margin-bottom: 20px; }
 
 <div class="product-grid">
     <?php foreach($products as $product): ?>
-        <div class="product-item">
-            <img src="Images/<?= $product['image'] ?>" alt="<?= htmlspecialchars($product['name']) ?>">
-            <p><?= htmlspecialchars($product['name']) ?></p>
+        <div class="product-card">
+            <div class="image-area">
+                <img src="Images/<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>">
+            </div>
+            <div class="card-body">
+                <div class="text-sm text-gray-700"><?= htmlspecialchars($product['name']) ?></div>
+                <div class="price">₱<?= htmlspecialchars(number_format($product['price'] ?? 0, 2)) ?></div>
+                
+            </div>
         </div>
     <?php endforeach; ?>
 </div>
