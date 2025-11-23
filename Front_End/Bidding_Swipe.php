@@ -1,4 +1,5 @@
 <?php
+session_start();
 $products = [
     ['name' => 'Red Jacket', 'image' => 'Images/jacket_hoodie.png', 'top' => true, 'price' => 1200],
     ['name' => 'Blue Hoodie', 'image' => 'Images/jacket_hoodie.png', 'top' => true, 'price' => 950],

@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once "../Back_End/Models/Users.php";
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -10,7 +11,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     );
 
     if($loginAccount){
-        echo "<script><alert>Login successful</alert></script>";
+        $_SESSION['username'] = $loginAccount['username'];
+        $_SESSION['user_id'] = $loginAccount['id'];
+
+        header("Location: index.php");
+        exit;
+    } else{
+        echo "<script>alert('Logged-in unsuccessfully.')</script>";     
     }
 }
 ?>

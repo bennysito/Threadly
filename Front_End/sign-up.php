@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once "../Back_End/Models/Users.php";
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){

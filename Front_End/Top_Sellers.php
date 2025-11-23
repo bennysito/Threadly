@@ -1,4 +1,5 @@
 <?php
+session_start();
 $sellers = [
     's','s','s','s','s','s',
     's','s','s','s','s','s'

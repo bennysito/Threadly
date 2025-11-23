@@ -53,5 +53,22 @@ public function login($username, $user_password){
         return False;
     }
 }
+
+    function authenticate_seller($user_id, $date, $contact_number, $address, $identifier1, $identifier2, $checkboxTerms){
+    $usernameInsertionDatabase = $this->db->prepare("SELECT first_name, last_name FROM users WHERE id = ?");
+    $usernameInsertionDatabase->bind_param("i", $user_id);
+    $usernameInsertionDatabase->execute();
+    $result = $usernameInsertionDatabase->get_result();
+
+    $getUseData = $result->fetch_assoc();
+
+    if(!$getUseData){
+        return false;
+    }
+
+    $querySellerInfoPreparation = $this->db->prepare("INSERT INTO sellerInfo(user_id, first_name, last_name,birth_date, address, contact_number, sellerpath_file1, sellerpath_file2, has_agreedTerms VALUE (?, ?, ?, ?, ?, ?,?, ?, ?)");
+    $querySellerInfoPreparation->bind_param("isssssssi", $first_name, $last_name, $date, $contact_number, $address, $identifier1, $identifier2, $checkboxTerms);
+    return $querySellerInfoPreparation->execute();
+    }
 }
 ?>
