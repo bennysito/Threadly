@@ -4,75 +4,98 @@ require_once __DIR__ . "/../Back_End/Models/Categories.php";
 
 $categoryObj = new Category();
 $categories = $categoryObj->getAllCategories();
-$totalSlides = count($categories);
 ?>
 
-<div class="swiper categorySwiper">
-  <div class="swiper-wrapper">
-    <?php foreach($categories as $cat): ?>
-      <div class="swiper-slide">
-        <a href="category_products.php?category=<?= urlencode($cat['name']); ?>">
-          <div class="relative w-full h-full">
-  <img src="<?= $cat['image']; ?>" 
-       alt="<?= htmlspecialchars($cat['name']); ?>" 
-       class="w-full h-full object-cover rounded-lg shadow-lg">
-  <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity rounded-lg">
-    <span class="text-white text-lg font-semibold"><?= htmlspecialchars($cat['name']); ?></span>
+
+<div class="category-swiper-wrapper">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+  <div class="swiper categorySwiper">
+    <div class="swiper-wrapper">
+      <?php foreach($categories as $cat): ?>
+        <div class="swiper-slide">
+          <a class="category-item" href="category_products.php?category=<?= urlencode($cat['name']); ?>">
+            <div class="category-thumb">
+              <img src="<?= htmlspecialchars($cat['image']); ?>" alt="<?= htmlspecialchars($cat['name']); ?>">
+            </div>
+            <div class="category-label"><?= htmlspecialchars($cat['name']); ?></div>
+          </a>
+        </div>
+      <?php endforeach; ?>
+    </div>
+
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
+    <div class="swiper-pagination"></div>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+  <style>
+   
+    .category-swiper-wrapper { width: 100%; padding: 22px 10px; box-sizing: border-box; }
+
+   
+    .swiper { overflow: visible; }
+    .swiper-wrapper { align-items: flex-start; }
+    .swiper-slide { width: 160px !important; height: auto; display: flex; justify-content: center; }
+
+    .category-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: inherit; }
+
+    
+    .category-thumb {
+      width: 140px;
+      height: 170px;            
+      border-radius: 28px;      
+      overflow: hidden;
+      background: #ffffff;      
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      border: none;
+    }
+
+    .category-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+    .category-item:hover .category-thumb img { transform: scale(1.05); }
+
+    .category-label { margin-top: 10px; font-size: 14px; color: #111827; text-align: center; }
+
+    
+    .swiper-button-prev, .swiper-button-next { color: #111; }
+
+    
+    @media (min-width: 1200px) {
+      .swiper-slide { width: 180px !important; }
+      .category-thumb { width: 160px; height: 190px; border-radius: 34px; }
+      .category-label { font-size: 15px; }
+    }
+
+    @media (max-width: 640px) {
+      .swiper-slide { width: 130px !important; }
+      .category-thumb { width: 120px; height: 150px; border-radius: 24px; }
+      .category-label { font-size: 13px; }
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      new Swiper('.categorySwiper', {
+        slidesPerView: 5,
+        spaceBetween: 18,
+        centeredSlides: false,
+        loop: false,
+        grabCursor: true,
+        grid: { rows: 2, fill: 'row' },
+        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+        pagination: { el: '.swiper-pagination', clickable: true },
+        breakpoints: {
+          320: { slidesPerView: 2, spaceBetween: 8, grid: { rows: 2 } },
+          640: { slidesPerView: 3, spaceBetween: 12, grid: { rows: 2 } },
+          1024: { slidesPerView: 5, spaceBetween: 18, grid: { rows: 2 } }
+        },
+        keyboard: { enabled: true },
+      });
+    });
+  </script>
 </div>
-
-        </a>
-      </div>
-    <?php endforeach; ?>
-  </div>
-
-  <div class="swiper-button-next"></div>
-  <div class="swiper-button-prev"></div>
-</div>
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
-<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-
-<style>
-.categorySwiper{padding-left:0;padding-right:0}
-.categorySwiper .swiper-wrapper{padding-right:0}
-.categorySwiper .swiper-slide {
-  width: 190px !important;
-  height: 200px !important;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 10px;
-  overflow: hidden;
-  background: #e0e0e0;
-  box-sizing: border-box;
-}
-.categorySwiper .swiper-slide img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 10px;
-}
-</style>
-
-<script>
-const categorySwiper = new Swiper(".categorySwiper", {
-  effect: "coverflow",
-  grabCursor: true, 
-  centeredSlides: true,
-  slidesPerView: 'auto',   
-  loop: true,               
-  spaceBetween: 10,         
-  coverflowEffect: {
-    rotate: 10,
-    stretch: 0,
-    depth: 200,
-    modifier: 1,
-    slideShadows: true,
-  },
-  navigation: {
-    nextEl: ".swiper-button-next",
-    prevEl: ".swiper-button-prev",
-  },
-});
-</script>

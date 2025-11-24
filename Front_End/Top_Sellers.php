@@ -1,8 +1,8 @@
 <?php
 session_start();
 $sellers = [
-    's','s','s','s','s','s',
-    's','s','s','s','s','s'
+    'Benedict','Benedict','Benedict','Benedict','Benedict','Benedict',
+    'Benedict','Benedict','Benedict','Benedict','Benedict','Benedict'
 ];
 ?>
 
@@ -13,7 +13,7 @@ $sellers = [
     <?php foreach($sellers as $name): ?>
       <div class="flex flex-col items-center">
         <div class="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-          
+          <img src="Images/king.png" alt="<?= htmlspecialchars($name) ?>" class="w-full h-full object-cover">
         </div>
         <div class="mt-3 text-sm text-gray-800 text-center"><?= htmlspecialchars($name) ?></div>
       </div>

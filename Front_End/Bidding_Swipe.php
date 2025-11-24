@@ -1,7 +1,4 @@
 <?php
-// Bidding_Swipe.php
-// Remove session_start() here if it's already in your main file
-// session_start();  ← DELETE OR COMMENT THIS LINE
 
 $products = [
     ['name' => 'Red Jacket',          'image' => 'Images/jacket_hoodie.png', 'top' => true,  'price' => 1200],
@@ -47,13 +44,13 @@ $products = [
       <?php endforeach; ?>
     </div>
 
-    <!-- Navigation Arrows -->
+    <!-- Nav arrows-->
     <div class="swiper-button-next !text-blue-600 !w-10 !h-10"></div>
     <div class="swiper-button-prev !text-blue-600 !w-10 !h-10"></div>
   </div>
 </div>
 
-<!-- Swiper CSS & JS -->
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
@@ -78,7 +75,7 @@ $products = [
   transform: translateY(-2px);
 }
 
-/* Beautiful blue arrows */
+
 .biddingSwiper .swiper-button-next,
 .biddingSwiper .swiper-button-prev {
   background: white;

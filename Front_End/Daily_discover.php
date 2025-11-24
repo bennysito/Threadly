@@ -10,6 +10,13 @@ $daily_products = [
     ["name" => "Strapless Bandeau Bra",         "image" => "panti.png", "hover_image" => "underwear_women.png", "price" => 649],
     ["name" => "Satin Robe & Panty Set",        "image" => "panti.png", "hover_image" => "underwear_women.png", "price" => 1199],
     ["name" => "Thong Minimal Coverage",        "image" => "panti.png", "hover_image" => "underwear_women.png", "price" => 299],
+     ["name" => "Lace Bralette Set",             "image" => "panti.png", "hover_image" => "underwear_women.png", "price" => 599],
+    ["name" => "High-Waist Seamless Brief",     "image" => "panti.png", "hover_image" => "underwear_women.png", "price" => 399],
+    ["name" => "Silk Chemise Nightwear",        "image" => "panti.png", "hover_image" => "underwear_women.png", "price" => 899],
+    ["name" => "Push-Up Lace Bra",              "image" => "panti.png", "hover_image" => "underwear_women.png", "price" => 749],
+    ["name" => "Cotton Boyshort Pack (3pcs)",   "image" => "panti.png", "hover_image" => "underwear_women.png", "price" => 499],
+    ["name" => "Strapless Bandeau Bra",         "image" => "panti.png", "hover_image" => "underwear_women.png", "price" => 649]
+  
 ];
 
 ?>

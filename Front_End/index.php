@@ -49,11 +49,14 @@ echo "Welcome, " . $_SESSION['username'];
     <?php require "Top_Sellers.php";?>
   </div>
 
+  <!--Daily Discover-->
   <div class="mb-12">
-    <p class="ml-2 text-2xl italic font-semibold custom-inter mb-6 text-center">
-      DAILY DISCOVER
-    </p>
-    <?php require "Daily_Discover.php"; ?>  <!-- Your new product grid file -->
+   
+    <p class="text-2xl italic font-semibold custom-inter text-center ">DAILY DISCOVER</p>
+    
+   
+    <hr class="flex-1 border-t-2 border-black mb-2">
+    <?php require "Daily_Discover.php"; ?>  
   </div>
 </div>
 
