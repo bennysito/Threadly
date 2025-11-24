@@ -1,0 +1,22 @@
+
+  .chewy-font{
+    font-family: 'Chewy', cursive;
+    font-size: 3rem;
+    font-weight: 400;
+  }  
+  .custom-inter {
+  font-family: 'Inter', sans-serif;
+}
+
+  html{
+    height:auto;
+  }
+  body { font-family: 'Inter', sans-serif; background-color: #f8f9fa;  }
+  .logo-scale{
+    display: inline-block;
+    transform: scale(1.5);
+    transform-origin:left;
+    margin-left: -30px;
+    will-change: transform;
+    
+  }
