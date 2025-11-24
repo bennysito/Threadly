@@ -16,7 +16,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $_SESSION['username'] = $loginAccount['username'];
         $_SESSION['user_id'] = $loginAccount['id'];
 
-        header("Location: index.php");
+        header("Location: Index.php");
         exit;
     } else{
         $login_error = "Login unsuccessful. Please check your credentials.";
