@@ -67,7 +67,23 @@ $categories = $categoryObj->getAllCategories();
     .category-label { margin-top: 10px; font-size: 14px; color: #111827; text-align: center; }
 
     
-    .swiper-button-prev, .swiper-button-next { color: #111; }
+   
+    .categorySwiper .swiper-button-prev,
+    .categorySwiper .swiper-button-next {
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      width: 44px !important;
+      height: 44px !important;
+      margin-top: -22px;
+    }
+
+    .categorySwiper .swiper-button-prev:after,
+    .categorySwiper .swiper-button-next:after {
+      font-size: 18px;
+      font-weight: bold;
+      color: #FBBF24; 
+    }
 
     
     @media (min-width: 1200px) {

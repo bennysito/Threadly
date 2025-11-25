@@ -75,7 +75,7 @@ $products = [
 }
 
 .biddingSwiper .swiper-wrapper {
-  align-items: flex-start; /* ensure slides align to top and avoid extra gap */
+  align-items: flex-start; 
 }
 
 .card-hover {
@@ -101,6 +101,7 @@ $products = [
 .biddingSwiper .swiper-button-prev:after {
   font-size: 18px;
   font-weight: bold;
+  color: #FBBF24; 
 }
 </style>
 
