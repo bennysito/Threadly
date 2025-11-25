@@ -93,8 +93,20 @@ function e($v) { return htmlspecialchars($v ?? '', ENT_QUOTES, 'UTF-8'); }
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-.input-bg { background-color: #F5F5F5; border-radius: 6px; padding: .65rem .75rem; border: 1px solid transparent; }
-.input-bg:focus { outline: none; border-color: rgba(0,0,0,0.06); box-shadow: none; background-color: #fff; }
+.input-bg { 
+    background-color: #F5F5F5; 
+    border-radius: 6px; 
+    padding: .65rem .75rem; 
+    border: 1px solid #bfb5b5ff; /* visible border */
+    transition: all 0.2s ease;
+}
+
+.input-bg:focus { 
+    outline: none; 
+    border-color: #3B82F6; /* Tailwind blue-500 */
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); /* subtle glow */
+    background-color: #fff;
+}
 </style>
 <script>
 let editing = false;
