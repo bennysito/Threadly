@@ -34,7 +34,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
   <!-- BIDDING DEAL-->
   <p class="ml-2 text-3xl font-semibold italic custom-inter mb-6 ">BIDDING DEALS</p>
-  <div class="mb-6">
+  <div class="">
     <?php require "Bidding_Swipe.php"; ?>
   </div>
 
