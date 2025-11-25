@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 $sellers = [
     'Benedict','Benedict','Benedict','Benedict','Benedict','Benedict',
     'Benedict','Benedict','Benedict','Benedict','Benedict','Benedict'

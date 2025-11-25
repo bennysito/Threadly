@@ -47,7 +47,7 @@
 .daily-card:hover .daily-img-main  { opacity: 0; }
 .daily-card:hover .daily-img-hover { opacity: 1; }
 
-/* Info */
+
 .daily-info { padding: 10px 14px 16px; }
 
 .daily-price-row {

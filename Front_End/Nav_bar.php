@@ -86,6 +86,7 @@
           <a href="#" class="block px-4 py-2 hover:bg-gray-100">Reviews</a>
           <a href="#" class="block px-4 py-2 hover:bg-gray-100">Wishlist</a>
           <a href="#" class="block px-4 py-2 hover:bg-gray-100">Orders</a>
+          <a href="Verify_Seller.php" class="block px-4 py-2 hover:bg-gray-100">Become a seller</a>
           <a href="#" class="block px-4 py-2 hover:bg-gray-100">Plans&Pricing</a>
           <hr class="my-1 border-gray-200">
           <a href="#" class="block px-4 py-2 hover:bg-gray-100">Logout</a>

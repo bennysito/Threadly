@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 $products = [
     ['name' => 'Red Jacket',          'image' => 'Images/jacket_hoodie.png', 'top' => true,  'price' => 1200],
     ['name' => 'Blue Hoodie',         'image' => 'Images/jacket_hoodie.png', 'top' => true,  'price' => 950],
@@ -22,7 +22,7 @@ $products = [
         <div class="swiper-slide">
           <div class="card-hover group">
             <div class="relative bg-white rounded-xl overflow-hidden border border-gray-100">
-              <div class="aspect-square bg-gray-50 p-8">
+              <div class="aspect-square bg-gray-50 ">
                 <img src="<?= $prod['image'] ?>" 
                      alt="<?= htmlspecialchars($prod['name']) ?>" 
                      class="w-full h-full object-contain drop-shadow-sm">
@@ -56,15 +56,20 @@ $products = [
 
 <style>
 .bidding-swiper-container {
-  padding: 0 40px;
+  padding: 0 40px 0 40px;
   max-width: 1400px;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 0;
 }
 
 .biddingSwiper .swiper-slide {
   width: 260px !important;
   height: auto;
+}
+
+.biddingSwiper .swiper-wrapper {
+  align-items: flex-start; /* ensure slides align to top and avoid extra gap */
 }
 
 .card-hover {
