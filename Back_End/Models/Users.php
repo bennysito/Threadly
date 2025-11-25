@@ -22,9 +22,9 @@ public function register($first_name, $last_name, $username, $password, $email, 
     $database_insert = $databaseStatement->execute();
 
     if ($database_insert) {
-        error_log("✅ Registration successful for user: $username");
+        error_log(" Registration successful for user: $username");
     } else {
-        error_log("❌ Registration failed: " . $databaseStatement->error);
+        error_log(" Registration failed: " . $databaseStatement->error);
     }
 
     $databaseStatement->close();
