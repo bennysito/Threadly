@@ -120,7 +120,7 @@ $isLoggedIn = isset($_SESSION['user_id']); // Replace 'user_id' with your sessio
   </div>
 <?php endif; ?>
              </div>
-            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
+            <a href="profile.php" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
             <a href="#" class="block px-4 py-2 hover:bg-gray-100">Reviews</a>
             <a href="#" class="block px-4 py-2 hover:bg-gray-100">Wishlist</a>
             <a href="#" class="block px-4 py-2 hover:bg-gray-100">Orders</a>
