@@ -95,7 +95,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
 
     <!-- Hamburger nga button ,katong 3 lines -->
     <div class="flex items-center gap-2">
-      <button id="mobileBtn" class="md:hidden flex items-center p-2 border rounded">
+      <button id="mobileBtn" class="md:hidden flex items-center p-2 border rounded ">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
              stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round"
@@ -112,8 +112,11 @@ $isLoggedIn = isset($_SESSION['user_id']); // Replace 'user_id' with your sessio
 ?>
 
 <div class="relative">
-    <button id="profileBtn" class="flex items-center rounded-full focus:outline-none focus:ring-2 focus:ring-white hover:ring-amber-500">
-        <img src="Images/avatar_blank.png" class="w-8 h-8 rounded-full" alt="Profile">
+    <button id="profileBtn" class="flex items-center text-gray-700 hover:text-amber-500 font-medium">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+</svg>
+
     </button>
 
     <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-10">
@@ -123,6 +126,7 @@ $isLoggedIn = isset($_SESSION['user_id']); // Replace 'user_id' with your sessio
             <a href="#" class="block px-4 py-2 hover:bg-gray-100">Reviews</a>
             <a href="#" class="block px-4 py-2 hover:bg-gray-100">Wishlist</a>
             <a href="#" class="block px-4 py-2 hover:bg-gray-100">Orders</a>
+            <a href="Verify_Seller.php" class="block px-4 py-2 hover:bg-gray-100">Become a seller</a>
             <a href="#" class="block px-4 py-2 hover:bg-gray-100">Plans & Pricing</a>
             <hr class="my-1 border-gray-200">
             <a href="?action=logout" class="block px-4 py-2 hover:bg-gray-100">Logout</a>
