@@ -1,5 +1,10 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
+<?php
 require_once "../Back_End/Models/Users.php";
 
 $login_error = '';
@@ -15,8 +20,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     if($loginAccount){
         $_SESSION['username'] = $loginAccount['username'];
         $_SESSION['user_id'] = $loginAccount['id'];
+        $_SESSION['first_name'] = $loginAccount['first_name'];
+        $_SESSION['last_name'] = $loginAccount['last_name'];
 
-        header("Location: Index.php");
+        header("Location: index.php");
         exit;
     } else{
         $login_error = "Login unsuccessful. Please check your credentials.";

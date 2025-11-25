@@ -1,4 +1,18 @@
 
+<?php 
+require_once "../Back_End/Models/Users.php";
+
+if(session_status() == PHP_SESSION_NONE){
+  session_start();
+
+}
+if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+    $user = new User();
+    $user->logoutUser(); 
+    header("location: index.php");
+    exit;
+}
+?>
 <nav class="bg-white  shadow-sm">
   <div class="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center justify-between gap-2">
 
@@ -34,7 +48,19 @@
           <path stroke-linecap="round" stroke-linejoin="round"
                 d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
         </svg>
-        Notification
+      <!--Hi, text balhin ngari -->
+      <?php
+      $firstName = 'Guest';
+      $lastName  = ''; 
+
+
+      if (isset($_SESSION['first_name'])) {
+      $firstName = $_SESSION['first_name'];
+      }
+
+      echo "Hello, " . htmlspecialchars($firstName);
+      ?>
+
       </a>
       <!--message icon-->
         <a href="https://samtu43.github.io/Sam_chanel/" class="flex items-center hover:text-amber-500"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -77,20 +103,36 @@
         </svg>
       </button>
 
-      <div class="relative">
-        <button id="profileBtn" class="flex items-center rounded-full focus:outline-none focus:ring-2 focus:ring-white hover:ring-amber-500">
-          <img src="Images/avatar_blank.png" class="w-8 h-8 rounded-full" alt="Profile">
-        </button>
-        <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-10">
-          <a href="#" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
-          <a href="#" class="block px-4 py-2 hover:bg-gray-100">Reviews</a>
-          <a href="#" class="block px-4 py-2 hover:bg-gray-100">Wishlist</a>
-          <a href="#" class="block px-4 py-2 hover:bg-gray-100">Orders</a>
-          <a href="#" class="block px-4 py-2 hover:bg-gray-100">Plans&Pricing</a>
-          <hr class="my-1 border-gray-200">
-          <a href="#" class="block px-4 py-2 hover:bg-gray-100">Logout</a>
-        </div>
-      </div>
+
+<?php
+ // Start the session
+
+// Check if user is logged in
+$isLoggedIn = isset($_SESSION['user_id']); // Replace 'user_id' with your session key from login
+?>
+
+<div class="relative">
+    <button id="profileBtn" class="flex items-center rounded-full focus:outline-none focus:ring-2 focus:ring-white hover:ring-amber-500">
+        <img src="Images/avatar_blank.png" class="w-8 h-8 rounded-full" alt="Profile">
+    </button>
+
+    <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-10">
+        <?php if ($isLoggedIn): ?>
+            <!-- Logged-in user dropdown -->
+            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Reviews</a>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Wishlist</a>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Orders</a>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Plans & Pricing</a>
+            <hr class="my-1 border-gray-200">
+            <a href="?action=logout" class="block px-4 py-2 hover:bg-gray-100">Logout</a>
+        <?php else: ?>
+            <!-- Guest dropdown -->
+            <a href="login.php" class="block px-4 py-2 hover:bg-gray-100">Login</a>
+            <a href="sign-up.php" class="block px-4 py-2 hover:bg-gray-100">Create Account</a>
+        <?php endif; ?>
+    </div>
+</div>
     </div>
 
   </div>

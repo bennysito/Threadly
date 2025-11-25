@@ -32,7 +32,7 @@ public function register($first_name, $last_name, $username, $password, $email, 
 }
 
 public function login($username, $user_password){
-   $databaseStatement = $this->db->prepare("SELECT id, username, user_password FROM users WHERE username = ? LIMIT 1");
+   $databaseStatement = $this->db->prepare("SELECT id, username, user_password, first_name, last_name FROM users WHERE username = ? LIMIT 1");
 
     if (!$databaseStatement) {
         error_log("Prepare failed: " . $this->db->threadly_connect->error);
@@ -69,6 +69,15 @@ public function login($username, $user_password){
     $querySellerInfoPreparation = $this->db->prepare("INSERT INTO sellerInfo(user_id, first_name, last_name,birth_date, address, contact_number, sellerpath_file1, sellerpath_file2, has_agreedTerms VALUE (?, ?, ?, ?, ?, ?,?, ?, ?)");
     $querySellerInfoPreparation->bind_param("isssssssi", $first_name, $last_name, $date, $contact_number, $address, $identifier1, $identifier2, $checkboxTerms);
     return $querySellerInfoPreparation->execute();
+    }
+
+    public function logoutUser(){
+    $_SESSION = [];
+    session_unset();
+    session_destroy();
+
+    header("Location: index.php");
+    exit;
     }
 }
 ?>

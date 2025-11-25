@@ -1,5 +1,10 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
+<?php
 require_once "../Back_End/Models/Users.php";
 
 $signup_error = '';

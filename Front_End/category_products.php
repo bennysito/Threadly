@@ -1,5 +1,10 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
+<?php
 $categoryName = $_GET['category'] ?? "All Products";
 
 $products = [

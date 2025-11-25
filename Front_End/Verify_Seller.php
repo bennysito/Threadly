@@ -1,5 +1,10 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
 <?php 
-session_start();
 require_once "../Back_End/Models/Users.php";
 
 if(!isset($_SESSION['user_id'])){

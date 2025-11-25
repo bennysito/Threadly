@@ -1,4 +1,10 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
+<?php
 
 $products = [
     ['name' => 'Red Jacket',          'image' => 'Images/jacket_hoodie.png', 'top' => true,  'price' => 1200],
