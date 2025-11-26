@@ -73,19 +73,13 @@ $categoryName = $_GET['category'] ?? 'Products';
             <!-- rating  -->
             <div>
                 <h1 class="text-3xl font-bold text-gray-900 mb-2"><?= htmlspecialchars($productName) ?></h1>
-                <div class="flex items-center gap-2">
-                    <div class="flex text-amber-400">
-                        <span>★★★★★</span>
-                    </div>
-                    <span class="text-sm text-gray-600">(1)</span>
-                </div>
             </div>
 
             <!-- price -->
             <div>
                 <div class="flex items-baseline gap-3">
                     <span class="text-3xl font-bold text-gray-900">₱<?= number_format($productPrice) ?>.00</span>
-                    <span class="text-lg text-gray-500 line-through">₱<?= number_format($productPrice * 2.5) ?>.00</span>
+                   
                 </div>
                 <p class="text-sm text-gray-600 mt-2"><strong>Benedictbenedt</strong></p>
             </div>
