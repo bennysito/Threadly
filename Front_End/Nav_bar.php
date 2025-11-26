@@ -13,6 +13,21 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     exit;
 }
 ?>
+<style>
+
+  .chewy-font-v2{
+    font-family: 'Chewy', cursive;
+    font-size: 2rem;
+    font-weight: 400;
+  }
+
+  /* Ensure the logo class used in markup receives the Chewy font as well */
+  .chewy-font{
+    font-family: 'Chewy', cursive;
+    font-size: 2rem;
+    font-weight: 400;
+  }
+</style>
 <nav class="bg-white  shadow-sm">
   <div class="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center justify-between gap-2">
 
@@ -57,8 +72,9 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
 </a>
 <!--cart icon-->
       <a href="https://samtu43.github.io/Sam_chanel/" class="flex items-center hover:text-amber-500 "><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
 </svg>
+
 </a>
 <!--heart icon-->
  <a href="https://samtu43.github.io/Sam_chanel/"class="flex items-center text-gray-700 hover:text-amber-500 font-medium"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -108,32 +124,79 @@ $isLoggedIn = isset($_SESSION['user_id']); // Replace 'user_id' with your sessio
     </button>
 
     <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-10">
-        <?php if ($isLoggedIn): ?>
-            <!-- Logged-in user dropdown -->
-             <div>
-              <?php if (isset($_SESSION['first_name']) && !empty($_SESSION['first_name'])): ?>
-  <div class="hidden sm:flex sm:items-center sm:ml-4">
-    <div style="line-height:1;">
-      <div class="text-sm italic font-medium text-gray-800">Welcome  <span class="text-sm font-bold italic" style="color:#F59E0B; text-transform:uppercase;"><?= htmlspecialchars($_SESSION['first_name']); ?></span></div>
-      
-    </div>
-  </div>
+    <?php if ($isLoggedIn): ?>
+
+    <?php if (!empty($_SESSION['first_name'])): ?>
+        <div class="px-4 py-2 chewy-font-v2">
+            Welcome 
+            <span class="font-bold italic uppercase text-yellow-500">
+                <?= htmlspecialchars($_SESSION['first_name']) . '!'; ?>
+            </span>
+        </div>
+    <?php endif; ?>
+
+    <a href="profile.php" class="flex items-center px-4 py-2 hover:bg-gray-100 gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+    </svg>
+    <span>Profile</span>
+</a>
+
+<a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+    </svg>
+    <span>Wishlist</span>
+</a>
+
+<a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+    </svg>
+    <span>Orders</span>
+</a>
+
+<a href="Verify_Seller.php" class="flex items-center px-4 py-2 hover:bg-gray-100 gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
+    </svg>
+    <span>Become a seller</span>
+</a>
+
+<a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+        <path d="M12 5a.75.75 0 0 0-.643.363L8.145 10.7 3.408 7.621a.75.75 0 0 0-1.15.74l1.5 10A.75.75 0 0 0 4.5 19h15a.75.75 0 0 0 .742-.639l1.5-10a.75.75 0 0 0-1.15-.74L15.855 10.7l-3.212-5.336A.75.75 0 0 0 12 5Z"/>
+    </svg>
+    <span>Plans & Pricing</span>
+</a>
+
+<hr class="my-1 border-gray-200">
+
+<a href="?action=logout" class="flex items-center px-4 py-2 hover:bg-gray-100 gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+        <path fill-rule="evenodd" d="M16.5 3.75a1.5 1.5 0 0 1 1.5 1.5v13.5a1.5 1.5 0 0 1-1.5 1.5h-6a1.5 1.5 0 0 1-1.5-1.5V15a.75.75 0 0 0-1.5 0v3.75a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V5.25a3 3 0 0 0-3-3h-6a3 3 0 0 0-3 3V9A.75.75 0 1 0 9 9V5.25a1.5 1.5 0 0 1 1.5-1.5h6ZM5.78 8.47a.75.75 0 0 0-1.06 0l-3 3a.75.75 0 0 0 0 1.06l3 3a.75.75 0 0 0 1.06-1.06l-1.72-1.72H15a.75.75 0 0 0 0-1.5H4.06l1.72-1.72a.75.75 0 0 0 0-1.06Z" clip-rule="evenodd" />
+    </svg>
+    <span>Logout</span>
+</a>
+
+
+<?php else: ?>
+
+    <div class="bg-white p-6 rounded-xl w-46 mx-auto flex flex-col gap-4 shadow-lg">
+      <p class="chewy-font-v2">Welcome!</p>
+    <a href="login.php" class="block text-white bg-black px-4 py-2 rounded-full text-center font-semibold hover:bg-amber-600 transition-colors duration-200">
+        LOG IN
+    </a>
+    <a href="sign-up.php" class="block text-black border border-black px-4 py-2 rounded-full text-center font-semibold hover:bg-black hover:text-white transition-colors duration-200">
+        SIGN UP
+    </a>
+</div>
+
+
 <?php endif; ?>
-             </div>
-            <a href="profile.php" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
-            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Reviews</a>
-            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Wishlist</a>
-            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Orders</a>
-            <a href="Verify_Seller.php" class="block px-4 py-2 hover:bg-gray-100">Become a seller</a>
-            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Plans & Pricing</a>
-            <hr class="my-1 border-gray-200">
-            <a href="?action=logout" class="block px-4 py-2 hover:bg-gray-100">Logout</a>
-        <?php else: ?>
-            <!-- Guest dropdown -->
-            <a href="login.php" class="block px-4 py-2 hover:bg-gray-100">Login</a>
-            <a href="sign-up.php" class="block px-4 py-2 hover:bg-gray-100">Create Account</a>
-        <?php endif; ?>
-    </div>
+
+</div>
+
 </div>
     </div>
 

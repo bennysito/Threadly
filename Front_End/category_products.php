@@ -33,6 +33,7 @@ $products = [
 
 <div class="grid">
     <?php foreach($products as $p): ?>
+    <a href="product_info.php?name=<?= urlencode($p['name']) ?>&image=<?= urlencode($p['image']) ?>&hover_image=<?= urlencode($p['hover_image']) ?>&price=<?= urlencode($p['price']) ?>&category=<?= urlencode($categoryName) ?>" style="text-decoration: none; color: inherit;">
     <div class="card">
         <div class="img-container">
             <!-- Main image -->
@@ -57,6 +58,7 @@ $products = [
             <p class="name"><?= htmlspecialchars($p['name']) ?></p>
         </div>
     </div>
+    </a>
     <?php endforeach; ?>
 </div>
 

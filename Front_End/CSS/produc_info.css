@@ -1,0 +1,31 @@
+ .heart-icon {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .heart-icon:hover{
+            fill: #f59e0b;
+            stroke: #f59e0b;
+        }
+        .heart-icon.liked {
+            fill: #f59e0b;
+            color: #f59e0b;
+        }
+        .size-btn {
+            transition: all 0.2s ease;
+        }
+        .size-btn.active {
+            background: #000;
+            color: white;
+            border-color: #000;
+        }
+        .color-option {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .color-option.selected {
+            border-color: #000;
+        }

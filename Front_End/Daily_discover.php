@@ -31,6 +31,7 @@ $daily_products = [
 
 <div class="daily-grid">
     <?php foreach($daily_products as $p): ?>
+    <a href="product_info.php?name=<?= urlencode($p['name']) ?>&image=<?= urlencode($p['image']) ?>&hover_image=<?= urlencode($p['hover_image']) ?>&price=<?= urlencode($p['price']) ?>&category=Daily%20Discover" style="text-decoration: none; color: inherit;">
     <div class="daily-card">
         <div class="daily-img-wrapper">
             
@@ -55,5 +56,6 @@ $daily_products = [
             <p class="daily-name"><?= htmlspecialchars($p['name']) ?></p>
         </div>
     </div>
+    </a>
     <?php endforeach; ?>
 </div>
