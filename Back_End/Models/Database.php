@@ -3,12 +3,13 @@
 class Database{
     private $host = "localhost";
     private $user = "root";
-    private $pass = "Samert43";
-    private $database = "threadly_db";
+    private $pass = "";
+    private $database = "threadly";
+    private $port = 3307;
 
     public $threadly_connect;
     function __construct(){
-    $this->threadly_connect = new mysqli($this->host, $this->user, $this->pass, $this->database);
+    $this->threadly_connect = new mysqli($this->host, $this->user, $this->pass, $this->database, $this->port);
         
     if ($this->threadly_connect->connect_error) {
     die("Connection failed: " . $this->threadly_connect->connect_error);

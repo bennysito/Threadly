@@ -54,21 +54,20 @@ public function login($username, $user_password){
     }
 }
 
-    function authenticate_seller($user_id, $date, $contact_number, $address, $identifier1, $identifier2, $checkboxTerms){
-    $usernameInsertionDatabase = $this->db->prepare("SELECT first_name, last_name FROM users WHERE id = ?");
-    $usernameInsertionDatabase->bind_param("i", $user_id);
-    $usernameInsertionDatabase->execute();
-    $result = $usernameInsertionDatabase->get_result();
+    public function authenticate_seller($user_id, $birthdate, $contact_number, $address, $id_front, $id_back, $agree_terms) {
+        $db = new Database();
 
-    $getUseData = $result->fetch_assoc();
+        $stmt = $db->prepare(
+            "INSERT INTO verify_seller(user_id, birthdate, contact_number, address, id_front, id_back, agree_terms) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        );
 
-    if(!$getUseData){
-        return false;
-    }
+        $stmt->bind_param("isssssi", $user_id, $birthdate, $contact_number, $address, $id_front, $id_back, $agree_terms);
 
-    $querySellerInfoPreparation = $this->db->prepare("INSERT INTO sellerInfo(user_id, first_name, last_name,birth_date, address, contact_number, sellerpath_file1, sellerpath_file2, has_agreedTerms VALUE (?, ?, ?, ?, ?, ?,?, ?, ?)");
-    $querySellerInfoPreparation->bind_param("isssssssi", $first_name, $last_name, $date, $contact_number, $address, $identifier1, $identifier2, $checkboxTerms);
-    return $querySellerInfoPreparation->execute();
+        $result = $stmt->execute();
+        $stmt->close();
+        $db->close_db();
+
+        return $result;
     }
 
     public function logoutUser(){

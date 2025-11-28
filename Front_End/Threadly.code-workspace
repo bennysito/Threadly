@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"name": "Threadly",
+			"path": ".."
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "Threadly System"
+	}
+}

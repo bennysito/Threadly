@@ -21,8 +21,8 @@ $userData = $result->fetch_assoc();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $userAccess = new User();
 
-    $path1 = "uploads/" . basename($_FILES["idIdentifier1"]["name"]);
-    $path2 = "uploads/" . basename($_FILES["idIdentifier2"]["name"]);
+    $path1 = "C:/xampp/htdocs/Threadly/Front_End/uploads/" . basename($_FILES["idIdentifier1"]["name"]);
+    $path2 = "C:/xampp/htdocs/Threadly/Front_End/uploads/" . basename($_FILES["idIdentifier2"]["name"]);
 
     $checkbox = isset($_POST["checkbox"]) ? 1 : 0;
 
@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!$authentication) {
         echo "<script>alert('Unable to verify as seller.');</script>";
     } else {
-        echo "<script>alert('Successfully requested to verify as seller.');</script>";
+        echo "<script>alert('Successfully requested to verify as seller. Please wait for this form to be approved.');</script>";
     }
 }
 ?>
