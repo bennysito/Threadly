@@ -20,6 +20,10 @@ class Database{
     function prepare($sql){
         return $this->threadly_connect->prepare($sql);
     }
+    // PARA SA ADMIN APPROVAL NA CONNECTION
+    public function get_connection() { 
+        return $this->threadly_connect;
+    }
 
     function close_db(){
         $this->threadly_connect->close();
