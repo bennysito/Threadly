@@ -7,16 +7,15 @@ if (session_status() === PHP_SESSION_NONE) {
 <?php
 $categoryName = $_GET['category'] ?? "All Products";
 
-$products = [
-    ["name" => "Classic Jacket",        "image" => "panti.png", "hover_image" => "underwear_women.png", "price" => 499],
-    ["name" => "Cozy Sweater",          "image" => "panti.png", "hover_image" => "underwear_women.png", "price" => 299],
-    ["name" => "Slim Pants",            "image" => "panti.png", "hover_image" => "underwear_women.png", "price" => 399],
-    ["name" => "Everyday Brief",        "image" => "panti.png", "hover_image" => "underwear_women.png", "price" => 149],
-    ["name" => "Pajama Set",            "image" => "panti.png", "hover_image" => "underwear_women.png", "price" => 349],
-    ["name" => "Denim Jacket",          "image" => "panti.png", "hover_image" => "underwear_women.png", "price" => 699],
-    ["name" => "Hoodie",                "image" => "panti.png", "hover_image" => "underwear_women.png", "price" => 459],
-    ["name" => "Jogger Pants",          "image" => "panti.png", "hover_image" => "underwear_women.png", "price" => 379],
-];
+// Fetch products from DB for this category
+require_once __DIR__ . "/../Back_End/Models/Search.php";
+$search = new Search();
+$products = [];
+if ($categoryName === 'All Products') {
+    $products = $search->getRecent(24);
+} else {
+    $products = $search->getByCategory($categoryName, 24);
+}
 ?>
 
 <!DOCTYPE html>

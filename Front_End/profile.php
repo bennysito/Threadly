@@ -203,8 +203,8 @@ function toggleEdit() {
       </div>
 
       <div class="flex space-x-4">
-        <button type="button" id="editBtn" onclick="toggleEdit()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Edit Details</button>
-        <button type="submit" id="saveBtn" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700" style="display:inline-block;">Save Changes</button>
+        <button type="button" id="editBtn" onclick="toggleEdit()" class="px-4 py-2 border border-black bg-white border-color-black text-black rounded hover:bg-black hover:text-white">Edit Details</button>
+        <button type="submit" id="saveBtn" class="px-4 py-2 border border-whte bg-amber-600 text-white rounded hover:bg-white hover:text-black hover:border-black" style="display:inline-block;">Save Changes</button>
       </div>
     </form>
   </div>

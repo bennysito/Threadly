@@ -4,11 +4,27 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 
-$productName = $_GET['name'] ?? 'Product';
-$productImage = $_GET['image'] ?? 'panti.png';
-$productHoverImage = $_GET['hover_image'] ?? 'underwear_women.png';
-$productPrice = (int)($_GET['price'] ?? 0);
-$categoryName = $_GET['category'] ?? 'Products';
+$product = null;
+if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+    require_once __DIR__ . "/../Back_End/Models/Search.php";
+    $search = new Search();
+    $product = $search->getById((int)$_GET['id']);
+}
+
+// Fallback to old GET params for compatibility
+if (!$product) {
+    $productName = $_GET['name'] ?? 'Product';
+    $productImage = $_GET['image'] ?? 'panti.png';
+    $productHoverImage = $_GET['hover_image'] ?? 'underwear_women.png';
+    $productPrice = (int)($_GET['price'] ?? 0);
+    $categoryName = $_GET['category'] ?? 'Products';
+} else {
+    $productName = $product['name'] ?? 'Product';
+    $productImage = $product['image'] ?? 'panti.png';
+    $productHoverImage = $product['hover_image'] ?? ($product['image'] ?? 'panti.png');
+    $productPrice = isset($product['price']) ? (int)$product['price'] : 0;
+    $categoryName = $product['category'] ?? 'Products';
+}
 ?>
 
 <!DOCTYPE html>
@@ -31,19 +47,11 @@ $categoryName = $_GET['category'] ?? 'Products';
 <div class="max-w-7xl mx-auto px-4 py-8">
     
     <!-- home text ,function to go back at homepage-->
-    <div class="mb-8 text-sm text-gray-600">
-        <a href="index.php" class="hover:text-amber-600">Home</a>
-        
-       
-    </div>
-
+   
     <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
         
             <!-- Logo kaotng Threaldy-->
-        <a  href="index.php" class="flex items-center flex-shrink-0">
-        <img src="Images/Threadly_logo.png" alt="Logo" class="h-16 w-auto ml-5/6 logo-scale">
-        <span class="chewy-font ml-6">Threadly</span>
-        </a>
+       
 
         <!-- image gallery-->
         <div class="flex flex-col gap-4">
@@ -52,9 +60,6 @@ $categoryName = $_GET['category'] ?? 'Products';
                 <img id="mainImage" src="Images/<?= htmlspecialchars($productImage) ?>" alt="<?= htmlspecialchars($productName) ?>" class="w-full h-full object-cover">
                 
                 <!-- Discount text -->
-                <div class="absolute top-4 left-4 bg-black text-white px-3 py-1 rounded-full text-sm font-bold">
-                    60% OFF
-                </div>
                 
                 <!-- heart icon -->
                 <button onclick="toggleHeart(event)" class="absolute top-4 right-4 p-2 bg-white rounded-full shadow-lg hover-icon">
@@ -128,7 +133,7 @@ $categoryName = $_GET['category'] ?? 'Products';
                 </details>
                 
                 <details>
-                    <summary class="font-semibold text-gray-900 cursor-pointer hover:text-amber-600">Condition Details</summary>
+                    <summary class="font-semibold text-gray-900 cursor-pointer hover:text-amber-600">o Details</summary>
                     <p class="text-gray-600 mt-2">BenedictbenedictbenedictbenedictBenedictbenedictbenedictbenedictBenedictbenedictbenedictbenedict.</p>
                 </details>
             </div>
