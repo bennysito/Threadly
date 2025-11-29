@@ -4,6 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 require_once "../Back_End/Models/Users.php";
+require_once "../Back_End/Models/Database.php";
 
 if (!isset($_SESSION['user_id'])) {
     echo "<script>alert('Log-in credentials not found.');</script>";
@@ -11,7 +12,8 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $db = new Database();
-$stmt = $db->prepare("SELECT first_name, last_name, email FROM users WHERE id = ?");
+$conn = $db->get_connection();
+$stmt = $conn->prepare("SELECT first_name, last_name, email FROM users WHERE id = ?");
 $stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -103,6 +105,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?= htmlspecialchars($userData['email']); ?>
     </p>
 
+    <?php if ($sellerStatus === 'pending'): ?>
+            <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6" role="alert">
+                <p class="font-bold">⏳ Verification Pending</p>
+                <p>Your seller verification request is currently **under review**. The form is temporarily hidden. We will notify you once it has been processed.</p>
+            </div>
+        <?php elseif ($sellerStatus === 'approved'): ?>
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
+                <p class="font-bold">✅ Verification Approved!</p>
+                <p>You are already a verified seller. You can now set up your shop and start selling.</p>
+                <a href="seller_dashboard.php" class="font-semibold underline">Go to Seller Dashboard</a>
+            </div>
+        <?php elseif ($sellerStatus === 'rejected'): ?>
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+                <p class="font-bold">❌ Verification Rejected</p>
+                <p>Your previous verification request was rejected. Please review the requirements and **resubmit the form below** with accurate details.</p>
+            </div>
+            <?php endif; ?>
+
+    <?php if ($sellerStatus === 'none' || $sellerStatus === 'rejected'): ?>
     <form method="POST" enctype="multipart/form-data" class="space-y-5">
 
         <!-- Date -->
@@ -146,7 +167,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </button>
 
     </form>
-</div>
+<?php endif; ?> </div>
 
 <br><br><br>
 
