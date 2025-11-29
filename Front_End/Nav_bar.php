@@ -32,7 +32,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
   <div class="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center justify-between gap-2">
 
     <!-- Logo kaotng Threaldy-->
-    <a  href="https://samtu43.github.io/Sam_chanel/" class="flex items-center flex-shrink-0">
+    <a  href="index.php" class="flex items-center flex-shrink-0">
       <img src="Images/Threadly_logo.png" alt="Logo" class="h-16 w-auto ml-5/6 logo-scale">
       <span class="chewy-font ml-6">Threadly</span>
     </a>

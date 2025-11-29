@@ -39,6 +39,12 @@ $categoryName = $_GET['category'] ?? 'Products';
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
         
+            <!-- Logo kaotng Threaldy-->
+        <a  href="index.php" class="flex items-center flex-shrink-0">
+        <img src="Images/Threadly_logo.png" alt="Logo" class="h-16 w-auto ml-5/6 logo-scale">
+        <span class="chewy-font ml-6">Threadly</span>
+        </a>
+
         <!-- image gallery-->
         <div class="flex flex-col gap-4">
         <!-- Main Image -->

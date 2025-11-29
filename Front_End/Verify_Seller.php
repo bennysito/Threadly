@@ -17,32 +17,64 @@ $stmt->execute();
 $result = $stmt->get_result();
 $userData = $result->fetch_assoc();
 
+if (isset($userData['role']) && $userData['role'] === 'seller') {
+    $sellerStatus = 'approved';
+} else {
+    // If not a seller, check the verify_seller table for pending/rejected requests
+    $stmt_status = $conn->prepare("SELECT status FROM verify_seller WHERE user_id = ? ORDER BY submitted_at DESC LIMIT 1");
+    $stmt_status->bind_param("i", $_SESSION['user_id']);
+    $stmt_status->execute();
+    $result_status = $stmt_status->get_result();
+    
+    if ($result_status->num_rows > 0) {
+        $row_status = $result_status->fetch_assoc();
+        $sellerStatus = $row_status['status']; // 'pending', 'rejected', or 'approved'
+    } else {
+        $sellerStatus = 'none'; // No form submitted yet
+    }
+    $stmt_status->close();
+}
+
+$db->close_db();
+
 // Handle POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Re-connect to database since it was closed after the status check
+    $db_post = new Database();
+
     $userAccess = new User();
 
+    $upload_dir = "C:/xampp/htdocs/Threadly/Front_End/uploads/";
+    
     $path1 = "C:/xampp/htdocs/Threadly/Front_End/uploads/" . basename($_FILES["idIdentifier1"]["name"]);
     $path2 = "C:/xampp/htdocs/Threadly/Front_End/uploads/" . basename($_FILES["idIdentifier2"]["name"]);
 
-    $checkbox = isset($_POST["checkbox"]) ? 1 : 0;
+    $checkbox = isset($_POST["checkbox"]) ? 1 : 0;  
 
-    move_uploaded_file($_FILES["idIdentifier1"]["tmp_name"], $path1);
-    move_uploaded_file($_FILES["idIdentifier2"]["tmp_name"], $path2);
+    if (move_uploaded_file($_FILES["idIdentifier1"]["tmp_name"], $path1) &&
+        move_uploaded_file($_FILES["idIdentifier2"]["tmp_name"], $path2)) 
+    {
+        $authentication = $userAccess->authenticate_seller(
+            $_SESSION['user_id'],
+            $_POST["date"],
+            $_POST["contact_number"],
+            $_POST["address"],
+            $path1,
+            $path2,
+            $checkbox
+        );
 
-    $authentication = $userAccess->authenticate_seller(
-        $_SESSION['user_id'],
-        $_POST["date"],
-        $_POST["contact_number"],
-        $_POST["address"],
-        $path1,
-        $path2,
-        $checkbox
-    );
-
-    if (!$authentication) {
-        echo "<script>alert('Unable to verify as seller.');</script>";
+        if (!$authentication) {
+            echo "<script>alert('Unable to verify as seller due to database error.');</script>";
+            // Set status to rejected to allow resubmission if DB error occurred
+            $sellerStatus = 'rejected'; 
+        } else {
+            // Success! Change status to pending to hide the form immediately
+            echo "<script>alert('Successfully requested to verify as seller. Please wait for this form to be approved.');</script>";
+            $sellerStatus = 'pending';
+        }
     } else {
-        echo "<script>alert('Successfully requested to verify as seller. Please wait for this form to be approved.');</script>";
+        echo "<script>alert('Error uploading files. Check permissions or file sizes.');</script>";
     }
 }
 ?>
@@ -57,6 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body class="bg-gray-100">
 
 <?php include "nav_bar.php"; ?>
+
 
 <div class="max-w-2xl mx-auto mt-10 bg-white shadow-lg rounded-xl p-8">
 

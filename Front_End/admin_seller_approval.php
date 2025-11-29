@@ -9,6 +9,60 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once "../Back_End/Models/Database.php";
 
+if (isset($_GET['action']) && isset($_GET['id'])) {
+    
+    $request_id = (int)$_GET['id'];
+    $action = $_GET['action']; // 'approve' or 'reject'
+    
+    // Connect to database to perform the update
+    $db_action = new Database();
+    $conn_action = $db_action->get_connection();
+    
+    $success = false;
+
+    if ($action === 'approve') {
+        // Para update sa verify seller nya sa seller profile na seller na siya
+        $sql_update = "
+            UPDATE verify_seller sv
+            JOIN users u ON sv.user_id = u.id
+            SET 
+                sv.status = 'approved',
+                u.role = 'seller'
+            WHERE sv.id = ? AND sv.status = 'pending'
+        ";
+        
+    } elseif ($action === 'reject') {
+        // Query to just update the status in verify_seller (user remains a 'customer' by default)
+        $sql_update = "
+            UPDATE verify_seller 
+            SET status = 'rejected'
+            WHERE id = ? AND status = 'pending'
+        ";
+    }
+
+    // Para update sa approved or rejected na button
+    if (isset($sql_update)) {
+        $stmt_update = $conn_action->prepare($sql_update);
+        $stmt_update->bind_param("i", $request_id); 
+        
+        if ($stmt_update->execute()) {
+            $success = true;
+            $_SESSION['message'] = "Request ID #{$request_id} has been {$action}d successfully.";
+            $_SESSION['message_type'] = ($action === 'approve') ? 'green' : 'red';
+        } else {
+            $_SESSION['message'] = "Error {$action}ing request: " . $conn_action->error;
+            $_SESSION['message_type'] = 'red';
+        }
+        $stmt_update->close();
+    }
+    
+    $db_action->close_db();
+    
+    
+    header("Location: admin_seller_approval.php");
+    exit;
+}
+
 $db = new Database();
 $conn = $db->get_connection();
 
