@@ -225,6 +225,7 @@ if ($idCol && $nameCol && $sellerCol) {
 <html lang="en">
 <head>
 <meta charset="utf-8" />
+<link href="https://fonts.googleapis.com/css2?family=Chewy&display=swap" rel="stylesheet">
 <title>Profile Details — Threadly</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <script src="https://cdn.tailwindcss.com"></script>

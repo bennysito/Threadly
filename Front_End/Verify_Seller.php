@@ -86,11 +86,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <title>Seller Authentication</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Chewy&display=swap" rel="stylesheet">
+
+    <style>
+        .chewy-font{
+    font-family: 'Chewy', cursive;
+    font-size: 3rem;
+    font-weight: 400;
+  }  
+        </style>
 </head>
 
 <body class="bg-gray-100">
 
-<?php include "nav_bar.php"; ?>
+<?php include "Nav_bar.php"; ?>
 
 
 <div class="max-w-2xl mx-auto mt-10 bg-white shadow-lg rounded-xl p-8">

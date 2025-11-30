@@ -242,3 +242,21 @@ $isLoggedIn = isset($_SESSION['user_id']); // Replace 'user_id' with your sessio
     <a href="#" class="block text-gray-700 hover:text-blue-500">Help</a>
   </div>
 </nav>
+
+<script>
+  // Grab the profile button and the dropdown
+  const profileBtn = document.getElementById('profileBtn');
+  const profileDropdown = document.getElementById('profileDropdown');
+
+  // Toggle dropdown on click
+  profileBtn.addEventListener('click', () => {
+    profileDropdown.classList.toggle('hidden');
+  });
+
+  // Optional: close the dropdown if user clicks outside
+  document.addEventListener('click', (event) => {
+    if (!profileBtn.contains(event.target) && !profileDropdown.contains(event.target)) {
+      profileDropdown.classList.add('hidden');
+    }
+  });
+</script>
