@@ -19,7 +19,7 @@ $user_id = $_SESSION['user_id'];
 
 // Fetch current user data
 $stmt = $conn->prepare("SELECT first_name, last_name, username, email, contact_number FROM users WHERE id = ?");
-if (!$stmt) die("Prepare failed: " . $db->error);
+if (!$stmt) die("Prepare failed: " . $conn->error);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -151,7 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $types .= "i";
 
         $stmt = $conn->prepare($query);
-        if (!$stmt) die("Prepare failed: " . $db->error);
+        if (!$stmt) die("Prepare failed: " . $conn->error);
         $stmt->bind_param($types, ...$params);
 
         if ($stmt->execute()) {
