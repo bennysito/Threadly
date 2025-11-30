@@ -22,7 +22,7 @@ if (session_status() === PHP_SESSION_NONE) {
   <?php require "Nav_bar.php"; ?>
 </div>
 
-
+<body class="bg-white">
 
  <div class="container mx-auto py-8">
   

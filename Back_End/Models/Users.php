@@ -8,11 +8,11 @@ class User {
 
     public function __construct() {
         $db = new Database();
-        $this->conn = $db->get_connection();  // <-- FIX: Use mysqli connection
+        $this->conn = $db->get_connection();
     }
 
     /* ===========================
-       REGISTER
+        REGISTER
     ============================ */
     public function register($first_name, $last_name, $username, $password, $email, $contact_number) {
 
@@ -43,7 +43,7 @@ class User {
 
 
     /* ===========================
-       LOGIN
+        LOGIN
     ============================ */
     public function login($username, $password) {
 
@@ -78,7 +78,7 @@ class User {
 
 
     /* ===========================
-       SELLER AUTHENTICATION
+        SELLER AUTHENTICATION
     ============================ */
     public function authenticate_seller(
         $user_id, $birthdate, $contact_number, $address, 
@@ -109,13 +109,12 @@ class User {
 
 
     /* ===========================
-       LOGOUT
+        LOGOUT
     ============================ */
     public function logoutUser() {
         session_unset();
         session_destroy();
-        header("Location: index.php");
-        exit();
+        // Redirection is handled by the calling script
     }
 }
 ?>
