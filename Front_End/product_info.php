@@ -97,7 +97,7 @@ $allThumbnails = array_unique(array_filter([$productImage, $productHoverImage, .
                 <!-- Main Image -->
                 <div class="relative bg-gray-100 rounded-2xl overflow-hidden aspect-square shadow-lg">
                     <img id="mainImage"
-                         src="Images/<?= htmlspecialchars($productImage) ?>"
+                         src="<?= htmlspecialchars($productImage) ?>"
                          alt="<?= htmlspecialchars($productName) ?>"
                          class="w-full h-full object-cover">
 
