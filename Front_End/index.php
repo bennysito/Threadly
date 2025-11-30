@@ -16,44 +16,66 @@ if (session_status() === PHP_SESSION_NONE) {
 <link href="CSS/homepage.css" rel="stylesheet">
 </head>
 
-<!--Nav-->
-
-<div>
-  <?php require "Nav_bar.php"; ?>
-</div>
-
 <body class="bg-white">
 
- <div class="container mx-auto py-8">
-  
-  <!-- CATEGORIES-->
-  <p class="ml-2 text-3xl font-semibold italic custom-inter mt-0">CATEGORIES</p>
-  <div>
-    <?php require "Category_carousel.php"; ?>
-  </div>
+    <?php require "nav_bar.php"; ?>
 
-  <!-- BIDDING DEAL-->
-  <p class="ml-2 text-3xl font-semibold italic custom-inter mb-6 ">BIDDING DEALS</p>
-  <div class="">
-    <?php require "Bidding_Swipe.php"; ?>
-  </div>
+    <?php require "wishlist_panel.php"; ?>
 
-  <div>
-    <p class="ml-2 text-2xl italic font-semibold custom-inter mb-6">TOP SELLERS</p>
-    <?php require "Top_Sellers.php";?>
-  </div>
+    <div class="container mx-auto py-8">
 
-  <!--Daily Discover-->
-  <div class="mb-12">
-   
-    <p class="text-2xl italic font-semibold custom-inter text-center ">DAILY DISCOVER</p>
-    
-   
-    <hr class="flex-1 border-t-2 border-black mb-2">
-    <?php require "Daily_Discover.php"; ?>  
-  </div>
-</div>
+        <p class="ml-2 text-3xl font-semibold italic custom-inter mt-0">CATEGORIES</p>
+        <div>
+            <?php require "Category_carousel.php"; ?>
+        </div>
 
-<script src = "JS/script.js"></script>
+        <p class="ml-2 text-3xl font-semibold italic custom-inter mb-6">BIDDING DEALS</p>
+        <div>
+            <?php require "Bidding_Swipe.php"; ?>
+        </div>
+
+        <div>
+            <p class="ml-2 text-2xl italic font-semibold custom-inter mb-6">TOP SELLERS</p>
+            <?php require "Top_Sellers.php"; ?>
+        </div>
+
+        <div class="mb-12">
+            <p class="text-2xl italic font-semibold custom-inter text-center">DAILY DISCOVER</p>
+            <hr class="flex-1 border-t-2 border-black mb-2">
+            <?php require "Daily_Discover.php"; ?>
+        </div>
+
+    </div>
+
+    <script>
+        // NAVBAR DROPDOWN (profile)
+        const profileBtn = document.getElementById('profileBtn');
+        const profileDropdown = document.getElementById('profileDropdown');
+        if(profileBtn) {
+            profileBtn.addEventListener('click', () => {
+                profileDropdown.classList.toggle('hidden');
+            });
+        }
+
+        // MOBILE MENU
+        const mobileBtn = document.getElementById('mobileBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        if(mobileBtn) {
+            mobileBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+
+        document.addEventListener('click', (event) => {
+            if(profileDropdown && profileBtn && !profileBtn.contains(event.target) && !profileDropdown.contains(event.target)){
+                profileDropdown.classList.add('hidden');
+            }
+        });
+        
+        // ⭐ CORRECTION 2: REMOVED CONFLICTING WISHLIST JAVASCRIPT ⭐
+        // The correct wishlist logic is now only in 'wishlist_panel.php'.
+        
+    </script>
+
 </body>
 </html>

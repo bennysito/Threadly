@@ -4,7 +4,7 @@ class Database {
     private $user     = "root";
     private $pass     = "";
     private $database = "threadly";
-    private $port     = 3307;
+    private $port     = 3308;
 
     public $threadly_connect;
 
