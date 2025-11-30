@@ -14,10 +14,11 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $db = new Database(); // your Database class that returns mysqli-like object
+$conn = $db->get_connection();
 $user_id = $_SESSION['user_id'];
 
 // Fetch current user data
-$stmt = $db->prepare("SELECT first_name, last_name, username, email, contact_number FROM users WHERE id = ?");
+$stmt = $conn->prepare("SELECT first_name, last_name, username, email, contact_number FROM users WHERE id = ?");
 if (!$stmt) die("Prepare failed: " . $db->error);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
@@ -149,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $params[] = $user_id;
         $types .= "i";
 
-        $stmt = $db->prepare($query);
+        $stmt = $conn->prepare($query);
         if (!$stmt) die("Prepare failed: " . $db->error);
         $stmt->bind_param($types, ...$params);
 
