@@ -101,7 +101,7 @@ if (isset($_SESSION['user_id'])) {
         .info { padding: 1rem; }
         .price { font-weight: 700; font-size: 1.3rem; color: #111; }
         .name { margin-top: 0.5rem; color: #444; font-size: 0.95rem; 
-                 display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+                display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .heart { width: 28px; height: 28px; stroke: #666; transition: all 0.2s; cursor: pointer; }
         .heart:hover { stroke: #ef4444; fill: #ef4444; }
         .heart.active { stroke: #ef4444; fill: #ef4444; }
@@ -133,18 +133,19 @@ if (isset($_SESSION['user_id'])) {
                         <div class="card">
                             <div class="img-container">
                                 <img src="<?= htmlspecialchars($p['image'] ?? 'placeholder.jpg') ?>" 
-                                     alt="<?= htmlspecialchars($p['name'] ?? '') ?>" class="main-img">
+                                    alt="<?= htmlspecialchars($p['name'] ?? '') ?>" class="main-img">
                                 <img src="<?= htmlspecialchars($p['hover_image'] ?? $p['image'] ?? 'placeholder.jpg') ?>" 
-                                     alt="hover" class="hover-img">
+                                    alt="hover" class="hover-img">
                             </div>
                             <div class="info">
                                 <div class="flex justify-between items-center">
                                     <div class="price">₱<?= number_format((float)($p['price'] ?? 0), 2) ?></div>
                                     <svg class="heart <?= in_array((int)($p['id'] ?? 0), $wishlistProductIds) ? 'active' : '' ?>" 
-                                         data-product-id="<?= (int)($p['id'] ?? 0) ?>"
-                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        data-product-id="<?= (int)($p['id'] ?? 0) ?>"
+                                        onclick="event.preventDefault(); event.stopPropagation(); window.toggleWishlist(<?= (int)($p['id'] ?? 0) ?>)"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                                              d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
                                     </svg>
                                 </div>
                                 <p class="name"><?= htmlspecialchars($p['name'] ?? 'Product') ?></p>
@@ -160,44 +161,16 @@ if (isset($_SESSION['user_id'])) {
 </html>
 
 <script>
+    // General navigation script remains
     const profileBtn = document.getElementById('profileBtn');
-        const profileDropdown = document.getElementById('profileDropdown');
-        if(profileBtn) {
-            profileBtn.addEventListener('click', () => {
-                profileDropdown.classList.toggle('hidden');
-            });
-        }
-document.querySelectorAll('.heart').forEach(heart => {
-    heart.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        const productId = this.getAttribute('data-product-id');
-        
-        // Optimistically update UI
-        this.classList.toggle('active');
-        
-        // Send request to server
-        const formData = new FormData();
-        formData.append('product_id', productId);
-        
-        fetch('toggle_wishlist.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (!data.success) {
-                // Revert on error
-                heart.classList.toggle('active');
-                alert(data.message || 'Error updating wishlist');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            // Revert on error
-            heart.classList.toggle('active');
+    const profileDropdown = document.getElementById('profileDropdown');
+    if (profileBtn) {
+        profileBtn.addEventListener('click', () => {
+            profileDropdown.classList.toggle('hidden');
         });
-    });
-});
+    }
+
+    // THE PREVIOUS WISHLIST EVENT LISTENER IS REMOVED.
+    // The toggle is now handled directly by the heart icon's onclick attribute,
+    // which calls the global 'window.toggleWishlist' function defined in wishlist_panel.php.
 </script>
