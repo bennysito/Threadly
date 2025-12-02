@@ -18,7 +18,7 @@ $conn = $db->get_connection();
 $user_id = $_SESSION['user_id'];
 
 // Fetch current user data
-$stmt = $conn->prepare("SELECT first_name, last_name, username, email, contact_number FROM users WHERE id = ?");
+$stmt = $conn->prepare("SELECT first_name, last_name, username, email, contact_number, role FROM users WHERE id = ?");
 if (!$stmt) die("Prepare failed: " . $conn->error);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
@@ -28,6 +28,9 @@ $user = $result->fetch_assoc();
 if (!$user) {
     die("User not found.");
 }
+
+// Check if user is a seller
+$isSeller = ($user['role'] === 'seller');
 
 $original_user = $user;
 
@@ -160,7 +163,11 @@ function toggleEdit() {
         <a href="#" class="hover:underline">My Reviews</a>
         <a href="#" class="hover:underline">My Wishlist</a>
         <a href="#" class="hover:underline">My Orders</a>
-        <a href="Verify_Seller.php" class="hover:underline">Become a Seller</a>
+        <?php if ($isSeller): ?>
+          <a href="seller_dashboard.php" class="hover:underline">Seller Center</a>
+        <?php else: ?>
+          <a href="Verify_Seller.php" class="hover:underline">Become a Seller</a>
+        <?php endif; ?>
       </nav>
     </div>
 
