@@ -111,6 +111,9 @@ if (isset($_SESSION['user_id'])) {
 
     <?php require "Nav_bar.php"; ?>
     <?php require "wishlist_panel.php"; ?>
+    <?php require "notification_panel.php"; ?> 
+    <?php require "add_to_bag.php"; ?> 
+    <?php require "messages_panel.php"; ?>
 
     <div class="max-w-7xl mx-auto px-6 py-12">
         <h1 class="text-4xl font-bold text-gray-900 mb-10">

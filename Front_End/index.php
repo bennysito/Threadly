@@ -24,7 +24,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <?php require "notification_panel.php"; ?> 
     <?php require "add_to_bag.php"; ?> 
     <?php require "messages_panel.php"; ?> 
-    <div class="container mx-auto py-8">
+    <div class="container mx-auto py-8">    
 
         <p class="ml-2 text-3xl font-semibold italic custom-inter mt-0">CATEGORIES</p>
         <div>

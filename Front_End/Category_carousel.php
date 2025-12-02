@@ -60,6 +60,7 @@ $categories = $categoryObj->getAllCategories();
       justify-content: center;
       box-shadow: 0 8px 24px rgba(0,0,0,0.12);
       border: none;
+      object-fit: contain;
     }
 
     .category-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
@@ -89,7 +90,7 @@ $categories = $categoryObj->getAllCategories();
     
     @media (min-width: 1200px) {
       .swiper-slide { width: 180px !important; }
-      .category-thumb { width: 160px; height: 190px; border-radius: 34px; }
+      .category-thumb { width: 150px; height: 190px; border-radius: 34px; }
       .category-label { font-size: 15px; }
     }
 
