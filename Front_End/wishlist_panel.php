@@ -6,56 +6,60 @@ if (session_status() == PHP_SESSION_NONE) {
 $isLoggedIn = isset($_SESSION['user_id']);
 
 // =================================================================================
-// === 1. PHP Data Fetching Function (Encapsulated) ===
+// === 1. PHP Data Fetching Function (Encapsulated) - FIX APPLIED HERE ===
 // =================================================================================
 
-function getWishlistData($isLoggedIn) {
-    $wishlistItems = [];
-    if ($isLoggedIn && isset($_SESSION['user_id'])) {
-        // Use a relative path to Database.php
-        require_once __DIR__ . "/../Back_End/Models/Database.php";
-        
-        if (!class_exists('Database')) {
-             error_log("Database class not found.");
-             return [];
-        }
-
-        try {
-            $db = new Database();
-            $conn = $db->threadly_connect;
-            $user_id = $_SESSION['user_id'];
+// 🐛 FIX: Prevent re-declaration error by checking if the function already exists
+if (!function_exists('getWishlistData')) {
+    function getWishlistData($isLoggedIn) {
+        $wishlistItems = [];
+        if ($isLoggedIn && isset($_SESSION['user_id'])) {
+            // Use a relative path to Database.php
+            require_once __DIR__ . "/../Back_End/Models/Database.php";
             
-            $sql = "
-                SELECT 
-                    wi.wishlist_item_id,
-                    p.product_id,
-                    p.product_name,
-                    p.price,
-                    p.image_url
-                FROM wishlist w
-                JOIN wishlist_item wi ON w.wishlist_id = wi.wishlist_id
-                JOIN products p ON wi.product_id = p.product_id
-                WHERE w.user_id = ?
-                ORDER BY wi.added_at DESC
-            ";
-            
-            $stmt = $conn->prepare($sql);
-            if ($stmt) {
-                $stmt->bind_param('i', $user_id);
-                $stmt->execute();
-                $result = $stmt->get_result();
-                while ($row = $result->fetch_assoc()) {
-                    $wishlistItems[] = $row;
-                }
-                $stmt->close();
+            if (!class_exists('Database')) {
+                error_log("Database class not found.");
+                return [];
             }
-            $db->close_db();
-        } catch (Exception $e) {
-            error_log("Database error in wishlist fetch: " . $e->getMessage());
+
+            try {
+                $db = new Database();
+                $conn = $db->threadly_connect;
+                $user_id = $_SESSION['user_id'];
+                
+                $sql = "
+                    SELECT 
+                        wi.wishlist_item_id,
+                        p.product_id,
+                        p.product_name,
+                        p.price,
+                        p.image_url
+                    FROM wishlist w
+                    JOIN wishlist_item wi ON w.wishlist_id = wi.wishlist_id
+                    JOIN products p ON wi.product_id = p.product_id
+                    WHERE w.user_id = ?
+                    ORDER BY wi.added_at DESC
+                ";
+                
+                $stmt = $conn->prepare($sql);
+                if ($stmt) {
+                    $stmt->bind_param('i', $user_id);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    while ($row = $result->fetch_assoc()) {
+                        $wishlistItems[] = $row;
+                    }
+                    $stmt->close();
+                }
+                $db->close_db();
+            } catch (Exception $e) {
+                error_log("Database error in wishlist fetch: " . $e->getMessage());
+            }
         }
+        return $wishlistItems;
     }
-    return $wishlistItems;
 }
+// END of getWishlistData function definition
 
 // Initial Data Fetch
 $wishlistItems = getWishlistData($isLoggedIn);
@@ -111,7 +115,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'true') {
                                     <?= htmlspecialchars($item['product_name']) ?>
                                 </a>
                                 <p class="text-amber-600 font-bold text-sm">₱<?= number_format((float)$item['price'], 2) ?></p>
-                                <button onclick="removeWishlistItem(<?= $item['product_id'] ?>)" class="text-gray-500 hover:text-red-500 text-xs mt-1">
+                                <button onclick="window.removeWishlistItem(<?= $item['product_id'] ?>)" class="text-gray-500 hover:text-red-500 text-xs mt-1">
                                     Remove
                                 </button>
                             </div>
