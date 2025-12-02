@@ -5,6 +5,48 @@ $query = $_GET['q'] ?? '';
 // Capture the sort parameter, default to 'relevance'
 $sort = $_GET['sort'] ?? 'relevance'; 
 $products = [];
+$wishlistProductIds = []; // 1. Initialize empty array for wishlist IDs
+
+// =========================================================================
+// 1. PHP LOGIC TO FETCH WISHLIST IDs
+// =========================================================================
+if (isset($_SESSION['user_id'])) {
+    $userId = $_SESSION['user_id'];
+    // Adjust path as needed. Assuming Database.php is in Back_End/Models/
+    $dbPath = __DIR__ . '/../Back_End/Models/Database.php';
+    
+    if (file_exists($dbPath)) {
+        require_once $dbPath;
+        try {
+            $db = new Database();
+            $conn = $db->threadly_connect;
+            
+            $stmt = $conn->prepare("
+                SELECT wi.product_id 
+                FROM wishlist w
+                JOIN wishlist_item wi ON w.wishlist_id = wi.wishlist_id
+                WHERE w.user_id = ?
+            ");
+            
+            if ($stmt) {
+                $stmt->bind_param('i', $userId);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                
+                while ($row = $result->fetch_assoc()) {
+                    $wishlistProductIds[] = (int) $row['product_id'];
+                }
+                $stmt->close();
+            }
+            $db->close_db();
+        } catch (Exception $e) {
+            // Handle DB error silently or log it
+            error_log("Wishlist fetch error: " . $e->getMessage());
+        }
+    }
+}
+// =========================================================================
+
 
 if ($query !== '') {
     // NOTE: This path assumes search_results.php is in the root and Search_db.php is in Back_End/Models/
@@ -12,7 +54,6 @@ if ($query !== '') {
     try {
         $search = new Search();
         // Pass the sort parameter to the search method (needs implementation in Search_db.php)
-        // Make sure your search method can handle the $sort parameter!
         $products = $search->search($query, 50, $sort); 
     } catch (Exception $e) {
         // Display any database or execution errors
@@ -57,10 +98,19 @@ function getSortUrl($query, $new_sort) {
         opacity: 1;
         visibility: visible;
     }
+    /* 4. Add the CSS for the active heart icon */
+    .heart.active {
+        fill: #ef4444 !important; /* Tailwind's red-500 */
+        color: #ef4444 !important;
+    }
 </style>
 </head>
 <body class="bg-gray-50">
-<?php include 'nav_bar.php'; // This includes the main navigation and search bar ?>
+<?php 
+    include 'nav_bar.php'; // This includes the main navigation and search bar 
+    // Ensure wishlist_panel.php is included BEFORE the content for the global JS function
+    include 'wishlist_panel.php'; 
+?>
 
 <main class="max-w-7xl mx-auto p-6">
   
@@ -82,16 +132,16 @@ function getSortUrl($query, $new_sort) {
                     </button>
                     <div class="dropdown-menu absolute left-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg opacity-0 invisible transition duration-150 z-10">
                         <a href="<?= getSortUrl($query, 'relevance') ?>" 
-                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 <?= ($sort === 'relevance' ? 'font-bold bg-gray-50' : '') ?>">
-                           Relevance
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 <?= ($sort === 'relevance' ? 'font-bold bg-gray-50' : '') ?>">
+                            Relevance
                         </a>
                         <a href="<?= getSortUrl($query, 'price_asc') ?>" 
-                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 <?= ($sort === 'price_asc' ? 'font-bold bg-gray-50' : '') ?>">
-                           Price, low to high
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 <?= ($sort === 'price_asc' ? 'font-bold bg-gray-50' : '') ?>">
+                            Price, low to high
                         </a>
                         <a href="<?= getSortUrl($query, 'price_desc') ?>" 
-                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 <?= ($sort === 'price_desc' ? 'font-bold bg-gray-50' : '') ?>">
-                           Price, high to low
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 <?= ($sort === 'price_desc' ? 'font-bold bg-gray-50' : '') ?>">
+                            Price, high to low
                         </a>
                     </div>
                 </div>
@@ -112,13 +162,16 @@ function getSortUrl($query, $new_sort) {
         <?php else: ?>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
                 <?php foreach ($products as $p):
-                    $id = $p['id'] ?? '';
+                    $id = $p['id'] ?? $p['product_id'] ?? 0; // Use product_id if 'id' isn't set
                     $name = $p['name'] ?? 'Product';
                     $image = $p['image'] ?? 'panti.png';
                     $price = isset($p['price']) ? number_format((float)$p['price'], 2) : '0.00';
                     $category = $p['category'] ?? '';
                     $availability = $p['availability'] ?? '';
                     $link = !empty($id) ? "product_info.php?id=$id" : "#";
+                    
+                    // Check if this specific product ID is in the user's wishlist
+                    $isLiked = in_array((int)$id, $wishlistProductIds);
                 ?>
                 <a href="<?= $link ?>" class="block bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition group">
                     <div class="relative">
@@ -128,8 +181,14 @@ function getSortUrl($query, $new_sort) {
                                 class="w-full h-full object-cover"
                                 onerror="this.src='Images/panti.png'">
                         </div>
-                        <button class="absolute top-2 right-2 p-1 bg-white rounded-full shadow-md text-gray-300 group-hover:text-red-500 transition">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
+                        
+                        <button onclick="event.preventDefault(); event.stopPropagation(); window.toggleWishlist(<?= (int)$id ?>);" 
+                            class="absolute top-2 right-2 p-1 bg-white rounded-full shadow-md transition">
+                            <svg class="heart w-5 h-5 <?= $isLiked ? 'active' : '' ?>" 
+                                 data-product-id="<?= (int)$id ?>" 
+                                 fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                            </svg>
                         </button>
                     </div>
                     

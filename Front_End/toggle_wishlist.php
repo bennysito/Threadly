@@ -136,4 +136,3 @@ if ($exists) {
 
 $db->close_db();
 ?>
-
