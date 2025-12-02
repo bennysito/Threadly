@@ -25,11 +25,11 @@ $categories = $categoryObj->getAllCategories();
               <?php if(strtolower($cat['name']) === 'new in'): ?>
                 <!-- Image carousel for "New In" category -->
                 <div class="image-carousel">
-                  <img src="IMG_0533.jpg" alt="New In 1" class="carousel-image active">
-                  <img src="IMG_0534.jpg" alt="New In 2" class="carousel-image">
-                  <img src="IMG_0535.jpg" alt="New In 3" class="carousel-image">
-                  <img src="IMG_0536.jpg" alt="New In 4" class="carousel-image">
-                  <img src="IMG_0537.jpg" alt="New In 5" class="carousel-image">
+                  <img src="Images/ac-tivewear.jpg" class="carousel-image active">
+                  <img src="Images/dresx.jpg"  class="carousel-image">
+                  <img src="Images/pznts.jpg"  class="carousel-image">
+                  <img src="Images/wats.jpg"  class="carousel-image">
+                  <img src="Images/pol-o.jpg" class="carousel-image">
                   
                   <!-- Carousel dots -->
                   <div class="carousel-dots">
@@ -51,21 +51,39 @@ $categories = $categoryObj->getAllCategories();
       <?php endforeach; ?>
     </div>
 
-    <div class="swiper-button-prev"></div>
-    <div class="swiper-button-next"></div>
+    <!-- Remove navigation buttons -->
     <div class="swiper-pagination"></div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
   <style>
-    .category-swiper-wrapper { width: 100%; padding: 22px 10px; box-sizing: border-box; }
+    .category-swiper-wrapper { 
+      width: 100%; 
+      padding: 22px 10px; 
+      box-sizing: border-box; 
+    }
 
-    .swiper { overflow: visible; }
+    .swiper { 
+      overflow: hidden; /* Changed from visible to hidden to prevent overflow */
+    }
     .swiper-wrapper { align-items: flex-start; }
-    .swiper-slide { width: 160px !important; height: auto; display: flex; justify-content: center; }
+    .swiper-slide { 
+      width: auto !important;
+      flex: 1 1 auto; /* Allow equal distribution */
+      max-width: 180px; /* Prevent slides from getting too wide */
+      height: auto; 
+      display: flex; 
+      justify-content: center; 
+    }
 
-    .category-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: inherit; }
+    .category-item { 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      text-decoration: none; 
+      color: inherit; 
+    }
 
     /* Carousel container */
     .category-thumb {
@@ -142,36 +160,43 @@ $categories = $categoryObj->getAllCategories();
     .category-item:hover .carousel-image { transform: scale(1.05); }
     .category-item:hover .category-thumb > img { transform: scale(1.05); }
 
-    .category-label { margin-top: 10px; font-size: 14px; color: #111827; text-align: center; }
-
-    /* Swiper navigation buttons */
-    .categorySwiper .swiper-button-prev,
-    .categorySwiper .swiper-button-next {
-      background: white;
-      border-radius: 50%;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-      width: 44px !important;
-      height: 44px !important;
-      margin-top: -22px;
+    .category-label { 
+      margin-top: 10px; 
+      font-size: 14px; 
+      color: #111827; 
+      text-align: center; 
     }
 
-    .categorySwiper .swiper-button-prev:after,
-    .categorySwiper .swiper-button-next:after {
-      font-size: 18px;
-      font-weight: bold;
-      color: #FBBF24; 
+    /* Hide navigation buttons */
+    .categorySwiper .swiper-button-prev,
+    .categorySwiper .swiper-button-next {
+      display: none !important;
+    }
+
+    /* Pagination dots styling */
+    .swiper-pagination {
+      position: relative !important;
+      margin-top: 20px;
+    }
+
+    .swiper-pagination-bullet {
+      background: #9CA3AF;
+      opacity: 0.5;
+    }
+
+    .swiper-pagination-bullet-active {
+      background: #FBBF24;
+      opacity: 1;
     }
 
     /* Responsive breakpoints */
     @media (min-width: 1200px) {
-      .swiper-slide { width: 180px !important; }
       .category-thumb { width: 150px; height: 190px; border-radius: 34px; }
       .category-label { font-size: 15px; }
       .carousel-dot { width: 7px; height: 7px; }
     }
 
     @media (max-width: 640px) {
-      .swiper-slide { width: 130px !important; }
       .category-thumb { width: 120px; height: 150px; border-radius: 24px; }
       .category-label { font-size: 13px; }
       .carousel-dot { width: 5px; height: 5px; }
@@ -180,26 +205,54 @@ $categories = $categoryObj->getAllCategories();
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
+      // Calculate how many categories to show per view based on total
+      const totalCategories = <?= count($categories); ?>;
+      const categoriesPerRow = Math.ceil(totalCategories / 2);
+
       // Initialize Swiper
       new Swiper('.categorySwiper', {
-        slidesPerView: 5,
+        slidesPerView: categoriesPerRow,
         spaceBetween: 18,
         centeredSlides: false,
         loop: false,
         grabCursor: true,
         grid: { rows: 2, fill: 'row' },
-        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-        pagination: { el: '.swiper-pagination', clickable: true },
+        pagination: { 
+          el: '.swiper-pagination', 
+          clickable: true 
+        },
         breakpoints: {
-          320: { slidesPerView: 2, spaceBetween: 8, grid: { rows: 2 } },
-          640: { slidesPerView: 3, spaceBetween: 12, grid: { rows: 2 } },
-          1024: { slidesPerView: 5, spaceBetween: 18, grid: { rows: 2 } }
+          320: { 
+            slidesPerView: 2, 
+            spaceBetween: 8, 
+            grid: { rows: 2 } 
+          },
+          640: { 
+            slidesPerView: 3, 
+            spaceBetween: 12, 
+            grid: { rows: 2 } 
+          },
+          768: {
+            slidesPerView: Math.min(4, categoriesPerRow),
+            spaceBetween: 15,
+            grid: { rows: 2 }
+          },
+          1024: { 
+            slidesPerView: Math.min(5, categoriesPerRow), 
+            spaceBetween: 18, 
+            grid: { rows: 2 } 
+          },
+          1280: {
+            slidesPerView: categoriesPerRow,
+            spaceBetween: 18,
+            grid: { rows: 2 }
+          }
         },
         keyboard: { enabled: true },
       });
 
       // Initialize image carousels for each category
-      const SWITCH_MS = 1000; // 1 second per image (as in your original code)
+      const SWITCH_MS = 1000; // 1 second per image
       const carouselContainers = document.querySelectorAll('.image-carousel');
 
       carouselContainers.forEach(container => {
