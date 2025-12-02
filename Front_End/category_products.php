@@ -160,6 +160,13 @@ if (isset($_SESSION['user_id'])) {
 </html>
 
 <script>
+    const profileBtn = document.getElementById('profileBtn');
+        const profileDropdown = document.getElementById('profileDropdown');
+        if(profileBtn) {
+            profileBtn.addEventListener('click', () => {
+                profileDropdown.classList.toggle('hidden');
+            });
+        }
 document.querySelectorAll('.heart').forEach(heart => {
     heart.addEventListener('click', function(e) {
         e.preventDefault();
