@@ -27,7 +27,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
         font-weight: 400;
     }
 </style>
-<nav class="bg-white  ">
+<nav class="bg-white shadow-sm sticky top-0 w-full z-20">
     <div class="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center justify-between gap-2">
 
         <a href="index.php" class="flex items-center flex-shrink-0">
@@ -105,7 +105,25 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
 
 <?php
 // Check if user is logged in
-$isLoggedIn = isset($_SESSION['user_id']); 
+$isLoggedIn = isset($_SESSION['user_id']);
+
+// Check if user is a seller
+$isSeller = false;
+if ($isLoggedIn) {
+    require_once "../Back_End/Models/Database.php";
+    $db = new Database();
+    $conn = $db->get_connection();
+    $stmt = $conn->prepare("SELECT role FROM users WHERE id = ?");
+    $stmt->bind_param("i", $_SESSION['user_id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $isSeller = ($row['role'] === 'seller');
+    }
+    $stmt->close();
+    $db->close_db();
+}
 ?>
 
 <div class="relative">
@@ -118,14 +136,32 @@ $isLoggedIn = isset($_SESSION['user_id']);
     <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-10">
         <?php if ($isLoggedIn): ?>
 
-            <?php if (!empty($_SESSION['first_name'])): ?>
-                <div class="px-4 py-2 chewy-font-v2">
-                    Welcome 
-                    <span class="font-bold italic uppercase text-yellow-500">
-                        <?= htmlspecialchars($_SESSION['first_name']) . '!'; ?>
-                    </span>
-                </div>
-            <?php endif; ?>
+    <?php if (!empty($_SESSION['first_name'])): ?>
+    <?php 
+    $greetings = [
+    "Welcome back,",
+    "Hello there,",
+    "Hi!,",
+    "Hey!,",
+    "Good to see you,",
+    "Let’s shop,",
+    "Hot deals await,",
+    "Your wishlist awaits,",
+    "Check your orders,",
+    "New arrivals!,"
+
+    ];
+
+    $greeting = $greetings[array_rand($greetings)];
+    $firstName = htmlspecialchars($_SESSION['first_name'])
+    ?>
+        <div class="px-4 py-2">
+          <?= $greeting ?>
+            <span class="font-bold text-black-200">
+                <?= $firstName  . '!'; ?>
+            </span>
+        </div>
+    <?php endif; ?>
 
             <a href="profile.php" class="flex items-center px-4 py-2 hover:bg-gray-100 gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -141,13 +177,6 @@ $isLoggedIn = isset($_SESSION['user_id']);
                 <span>My Bids</span>
             </a>
 
-            <a id="openWishlistDropdownBtn" href="javascript:void(0);" class="flex items-center px-4 py-2 hover:bg-gray-100 gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                </svg>
-                <span>Wishlist</span>
-            </a>
-
             <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
@@ -155,19 +184,23 @@ $isLoggedIn = isset($_SESSION['user_id']);
                 <span>Orders</span>
             </a>
 
-            <a href="Verify_Seller.php" class="flex items-center px-4 py-2 hover:bg-gray-100 gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
-                </svg>
-                <span>become a seller </span>
-            </a>
-
-            <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
-                    <path d="M12 5a.75.75 0 0 0-.643.363L8.145 10.7 3.408 7.621a.75.75 0 0 0-1.15.74l1.5 10A.75.75 0 0 0 4.5 19h15a.75.75 0 0 0 .742-.639l1.5-10a.75.75 0 0 0-1.15-.74L15.855 10.7l-3.212-5.336A.75.75 0 0 0 12 5Z"/>
-                </svg>
-                <span>Plans & Pricing</span>
-            </a>
+            <?php if ($isSeller): ?>
+                <!-- Seller Menu Items -->
+                <a href="seller_dashboard.php" class="flex items-center px-4 py-2 hover:bg-gray-100 gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
+                    </svg>
+                    <span>Seller Center</span>
+                </a>
+            <?php else: ?>
+                <!-- Become Seller Link for Non-Sellers -->
+                <a href="Verify_Seller.php" class="flex items-center px-4 py-2 hover:bg-gray-100 gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a .75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
+                    </svg>
+                    <span>Become a seller </span>
+                </a>
+            <?php endif; ?>
 
             <hr class="my-1 border-gray-200">
 
@@ -181,7 +214,6 @@ $isLoggedIn = isset($_SESSION['user_id']);
         <?php else: ?>
 
             <div class="bg-white p-6 rounded-xl w-46 mx-auto flex flex-col gap-4 shadow-lg">
-                <p class="chewy-font-v2">Welcome!</p>
                 <a href="login.php" class="block text-white bg-black px-4 py-2 rounded-full text-center font-semibold hover:bg-amber-600 transition-colors duration-200">
                     LOG IN
                 </a>
@@ -206,22 +238,5 @@ $isLoggedIn = isset($_SESSION['user_id']);
     </div>
 </nav>
 
-<script>
-    // Grab the profile button and the dropdown
-    const profileBtn = document.getElementById('profileBtn');
-    const profileDropdown = document.getElementById('profileDropdown');
-
-    // Toggle dropdown on click
-    if (profileBtn) {
-        profileBtn.addEventListener('click', () => {
-            profileDropdown.classList.toggle('hidden');
-        });
-    }
-
-    // Optional: close the dropdown if user clicks outside
-    document.addEventListener('click', (event) => {
-        if (profileDropdown && profileBtn && !profileBtn.contains(event.target) && !profileDropdown.contains(event.target)) {
-            profileDropdown.classList.add('hidden');
-        }
-    });
+<script src = "script.js">
 </script>

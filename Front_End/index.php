@@ -95,118 +95,9 @@ if (session_status() === PHP_SESSION_NONE) {
     <?php require "notification_panel.php"; ?> 
     <?php require "add_to_bag.php"; ?> 
     <?php require "messages_panel.php"; ?> 
+    <div class="container mx-auto py-8">    
 
-    <!-- Hero Carousel - 5 Slides, Swipable -->
-    <div class="relative w-full overflow-hidden mb-8">
-        <div id="hero-carousel" class="cursor-grab active:cursor-grabbing">
-
-            <!-- Slide 1 -->
-            <div class="carousel-slide bg-white relative">
-                <div class="container mx-auto flex items-center justify-between p-4 sm:p-8">
-                    <div class="w-1/2 pr-4 lg:pr-12">
-                        <p class="text-lg sm:text-xl font-medium mb-4">
-                            The Platform Where Pre-Loved ClothingOffers Quality, Affordability, and Sustainability</strong>.
-                        </p>
-                        <h1 class="hero-headline font-chewy font-extrabold text-black">
-                            Fashion For <br> Every Occasion
-                        </h1>
-                    </div>
-                    <div class="w-1/2 flex justify-end">
-                        <img src="Images/Lady1.png" alt="Woman in Santa hat holding sweaters" class="max-w-full h-auto">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Slide 2 -->
-            <div class="carousel-slide bg-amber-50 relative">
-                <div class="container mx-auto flex items-center justify-between p-4 sm:p-8">
-                    <div class="w-1/2 pr-4 lg:pr-12">
-                        <p class="text-lg sm:text-xl font-medium mb-4">
-                            Premium knits, jackets & boots all pre-loved and perfect for the cold season.
-                        </p>
-                        <h1 class="hero-headline font-chewy font-extrabold text-amber-900">
-                            Winter <br> Cozy Vibes
-                        </h1>
-                    </div>
-                    <div class="w-1/2 flex justify-end">
-                        <img src="Images/man3.png" alt="Woman in Santa hat holding sweaters" class="max-w-full h-auto">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Slide 3 -->
-            <div class="carousel-slide bg-teal-50 relative">
-                <div class="container mx-auto flex items-center justify-between p-4 sm:p-8">
-                    <div class="w-1/2 pr-4 lg:pr-12">
-                        <p class="text-lg sm:text-xl font-medium mb-4">
-                            Flowy dresses, light tops & sandals fresh finds for sunny days ahead.
-                        </p>
-                        <h1 class="hero-headline font-chewy font-extrabold text-teal-900">
-                            Ready for <br> Summer Days
-                        </h1>
-                    </div>
-                    <div class="w-1/2 flex justify-end">
-                        <img src="Images/Lady1.png" alt="Woman in Santa hat holding sweaters" class="max-w-full h-auto">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Slide 4 -->
-            <div class="carousel-slide bg-purple-50 relative">
-                <div class="container mx-auto flex items-center justify-between p-4 sm:p-8">
-                    <div class="w-1/2 pr-4 lg:pr-12">
-                        <p class="text-lg sm:text-xl font-medium mb-4">
-                            Bags, jewelry & shoes that instantly elevate any pre-loved outfit.
-                        </p>
-                        <h1 class="hero-headline font-chewy font-extrabold text-purple-900">
-                            The Perfect <br> Accessories
-                        </h1>
-                    </div>
-                    <div class="w-1/2 flex justify-end">
-                        <img src="Images/Lady1.png" alt="Woman in Santa hat holding sweaters" class="max-w-full h-auto">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Slide 5 -->
-            <div class="carousel-slide bg-rose-50 relative">
-                <div class="container mx-auto flex items-center justify-between p-4 sm:p-8">
-                    <div class="w-1/2 pr-4 lg:pr-12">
-                        <p class="text-lg sm:text-xl font-medium mb-4">
-                            Sustainable fashion that feels good on your wallet and the planet.
-                        </p>
-                        <h1 class="hero-headline font-chewy font-extrabold text-rose-900">
-                            Shop Smart <br> Live Green
-                        </h1>
-                    </div>
-                    <div class="w-1/2 flex justify-end">
-                        <img src="Images/Lady1.png" alt="Woman in Santa hat holding sweaters" class="max-w-full h-auto">
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Black Arrows BELOW the Carousel (Grok-style, hover amber) -->
-        <div class="arrow-container flex justify-center mt-6 pb-8">
-            <button id="prevBtn" class="grok-arrow">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
-                </svg>
-            </button>
-            <button id="nextBtn" class="grok-arrow">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
-                </svg>
-            </button>
-        </div>
-
-    </div>
-
-    <!-- Rest of the content -->
-    <div class="container mx-auto pt-0 pb-8 px-4 sm:px-6 lg:px-8"> 
-        
-        <p class="ml-2 text-3xl font-semibold italic  mt-0 mb-6">CATEGORIES</p>
+        <p class="ml-2 text-3xl font-semibold italic custom-inter mt-0">CATEGORIES</p>
         <div>
             <?php require "Category_carousel.php"; ?>
         </div>
@@ -221,15 +112,15 @@ if (session_status() === PHP_SESSION_NONE) {
         <hr class="flex-1 border-t-2 border-gray-200 my-8">
 
         <div>
-            <p class="ml-2 text-2xl italic font-semibold  mb-6">TOP SELLERS</p>
+            <p class="ml-2 text-3xl italic font-semibold custom-inter mb-6">TOP SELLERS</p>
             <?php require "Top_Sellers.php"; ?>
         </div>
 
         <hr class="flex-1 border-t-2 border-gray-200 my-8">
 
         <div class="mb-12">
-            <p class="text-2xl italic font-semibold text-center">DAILY DISCOVER</p>
-            <hr class="flex-1 border-t-2 border-black mb-6">
+            <p class="text-3xl italic font-semibold custom-inter text-left">DAILY DISCOVER</p>
+            <hr class="flex-1 border-t-2 border-black mb-2">
             <?php require "Daily_Discover.php"; ?>
         </div>
 

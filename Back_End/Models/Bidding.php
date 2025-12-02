@@ -61,8 +61,8 @@ class Bidding {
     // Get all bids for a product
     public function getBidsForProduct($product_id) {
         $stmt = $this->conn->prepare("
-            SELECT b.bid_id, b.product_id, b.user_id, b.bid_amount, b.bid_status, 
-                   b.bid_message, b.created_at, u.full_name, u.email
+            SELECT b.bid_id, b.product_id, b.bid_message, b.bid_status, b.session_id, b.bid_amount,
+            ,b.bit_team, u.full_name, u.email
             FROM bids b
             JOIN users u ON b.user_id = u.user_id
             WHERE b.product_id = ?
@@ -81,12 +81,12 @@ class Bidding {
     // Get user's bids
     public function getUserBids($user_id) {
         $stmt = $this->conn->prepare("
-            SELECT b.bid_id, b.product_id, b.bid_amount, b.bid_status, 
-                   b.bid_message, b.created_at, p.product_name, p.image_url, p.price
+            SELECT b.bid_id, b.product_id, b.bid_message, b.bid_status, b.session_id, b.bid_amount,
+            b.bit_time, p.product_name, p.image_url, p.price
             FROM bids b
             JOIN products p ON b.product_id = p.product_id
             WHERE b.user_id = ?
-            ORDER BY b.created_at DESC
+            ORDER BY b.bit_time DESC
         ");
         
         $stmt->bind_param('i', $user_id);
