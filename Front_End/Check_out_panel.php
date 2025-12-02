@@ -64,7 +64,7 @@
             <input type="checkbox" id="combo" checked onchange="calculateTotal()"
                    class="w-5 h-5 text-amber-600 rounded focus:ring-amber-500">
             <div class="w-16 h-16 bg-gray-100 rounded flex items-center justify-center">
-                <img src="Images/crolly.png" alt="blank" >
+                <img src="Images/baggy_pants.png" alt="blank" >
               <i data-lucide="package" class="w-8 h-8 text-gray-400"></i>
             </div>
             <div class="flex-1">
@@ -78,7 +78,7 @@
           <div class="flex items-center gap-4">
             <input type="checkbox" id="protection" onchange="calculateTotal()"
                    class="w-5 h-5 text-amber-600 rounded focus:ring-amber-500">
-            <div class="w-16 h-16 bg-gray-100 rounded"><img src="Images/crolly.png" alt="blank" ></div>
+            <div class="w-16 h-16 bg-gray-100 rounded"><img src="Images/baggy_pants.png" alt="blank" ></div>
             <div class="flex-1">
               <h3 class="font-medium">Swimsuit Secondhand /h3>
               <p class="text-sm text-gray-600">Quantity:1</p>
