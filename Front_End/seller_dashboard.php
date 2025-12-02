@@ -284,6 +284,10 @@ function toggleEdit() {
 <body class="bg-gray-100 min-h-screen">
 
 <?php include 'nav_bar.php'; ?>
+<?php require "wishlist_panel.php"; ?>
+<?php require "notification_panel.php"; ?> 
+<?php require "add_to_bag.php"; ?> 
+<?php require "messages_panel.php"; ?> 
 
 <main class="max-w-6xl mx-auto px-6 py-10">
   <div class="bg-white rounded-xl shadow p-6">
