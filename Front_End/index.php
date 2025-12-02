@@ -21,7 +21,9 @@ if (session_status() === PHP_SESSION_NONE) {
     <?php require "nav_bar.php"; ?>
 
     <?php require "wishlist_panel.php"; ?>
-
+    <?php require "notification_panel.php"; ?> 
+    <?php require "add_to_bag.php"; ?> 
+    <?php require "messages_panel.php"; ?> 
     <div class="container mx-auto py-8">
 
         <p class="ml-2 text-3xl font-semibold italic custom-inter mt-0">CATEGORIES</p>
@@ -72,9 +74,7 @@ if (session_status() === PHP_SESSION_NONE) {
             }
         });
         
-        // ⭐ CORRECTION 2: REMOVED CONFLICTING WISHLIST JAVASCRIPT ⭐
-        // The correct wishlist logic is now only in 'wishlist_panel.php'.
-        
+        // The panel JS listeners are now handled directly within each panel's included file.
     </script>
 
 </body>

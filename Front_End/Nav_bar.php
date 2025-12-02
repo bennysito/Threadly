@@ -47,14 +47,14 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
                     </span>
                     <input type="search" name="q" placeholder="Search"
                             class="w-full max-w-xs sm:max-w-md rounded-full pl-10 pr-10 py-2 border border-gray-300 
-                                 focus:outline-none focus:ring-2 focus:ring-amber-500 min-w-0">
+                                    focus:outline-none focus:ring-2 focus:ring-amber-500 min-w-0">
                 </div>
             </form>
         </div>
 
         <div class="hidden md:flex items-center gap-6 ml-4">
             
-            <a href="https://samtu43.github.io/Sam_chanel/" class="flex items-center hover:text-amber-500 gap-1 font-medium">
+            <a id="openNotificationBtn" href="javascript:void(0);" class="flex items-center hover:text-amber-500 gap-1 font-medium">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                     stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -62,13 +62,13 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
                 </svg>
             </a>
             
-            <a href="https://samtu43.github.io/Sam_chanel/" class="flex items-center hover:text-amber-500">
+            <a id="openMessagesBtn" href="javascript:void(0);" class="flex items-center hover:text-amber-500">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
                 </svg>
             </a>
             
-            <a href="https://samtu43.github.io/Sam_chanel/" class="flex items-center hover:text-amber-500 ">
+            <a id="openBagBtn" href="javascript:void(0);" class="flex items-center hover:text-amber-500 ">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                 </svg>
