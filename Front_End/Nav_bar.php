@@ -134,6 +134,13 @@ $isLoggedIn = isset($_SESSION['user_id']);
                 <span>Profile</span>
             </a>
 
+            <a href="my_bids.php" class="flex items-center px-4 py-2 hover:bg-gray-100 gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166m4.024-.166L18 9m-18 0a48.002 48.002 0 0 1 4.024-.166m0 0L6 9m12 0v-1.5m0 1.5c1.355 0 2.697.056 4.024.166M18 9l4.24.005M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                <span>My Bids</span>
+            </a>
+
             <a id="openWishlistDropdownBtn" href="javascript:void(0);" class="flex items-center px-4 py-2 hover:bg-gray-100 gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />

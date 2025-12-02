@@ -15,8 +15,8 @@ class Search {
         $stmt = $this->conn->prepare("
             SELECT p.product_id AS id, 
                    p.product_name AS name, 
-                   p.image_url AS image,
-                   p.image_url AS hover_image,
+                   CONCAT('uploads/', p.image_url) AS image,
+                   CONCAT('uploads/', p.image_url) AS hover_image,
                    p.price, 
                    c.name AS category
             FROM products p
@@ -37,8 +37,8 @@ class Search {
         $stmt = $this->conn->prepare("
             SELECT p.product_id AS id, 
                    p.product_name AS name, 
-                   p.image_url AS image,
-                   p.image_url AS hover_image,
+                   CONCAT('uploads/', p.image_url) AS image,
+                   CONCAT('uploads/', p.image_url) AS hover_image,
                    p.price, 
                    c.name AS category,
                    p.availability,
@@ -63,7 +63,7 @@ class Search {
             SELECT p.product_id AS id, 
                    p.product_name AS name, 
                    p.description,
-                   p.image_url AS image,
+                   CONCAT('uploads/', p.image_url) AS image,
                    p.price, 
                    c.name AS category,
                    p.availability,
@@ -86,8 +86,8 @@ class Search {
         $stmt = $this->conn->prepare("
             SELECT p.product_id AS id, 
                    p.product_name AS name, 
-                   p.image_url AS image,
-                   p.image_url AS hover_image,
+                   CONCAT('uploads/', p.image_url) AS image,
+                   CONCAT('uploads/', p.image_url) AS hover_image,
                    p.price, 
                    c.name AS category,
                    p.availability
@@ -110,8 +110,8 @@ class Search {
         $stmt = $this->conn->prepare("
             SELECT p.product_id AS id, 
                    p.product_name AS name, 
-                   p.image_url AS image,
-                   p.image_url AS hover_image,
+                   CONCAT('uploads/', p.image_url) AS image,
+                   CONCAT('uploads/', p.image_url) AS hover_image,
                    p.price, 
                    c.name AS category
             FROM products p
