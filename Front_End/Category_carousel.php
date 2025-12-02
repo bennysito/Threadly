@@ -11,6 +11,7 @@ $categoryObj = new Category();
 $categories = $categoryObj->getAllCategories();
 ?>
 
+    <?php require "wishlist_panel.php"; ?>
 
 <div class="category-swiper-wrapper">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />

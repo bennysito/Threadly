@@ -34,25 +34,13 @@ if (!$product) {
     die('<div class="text-center py-20"><h1 class="text-4xl font-bold text-gray-800">404 - Product Not Found</h1></div>');
 }
 
-// === Extract data safely (Dynamic!) ===
+// === Extract data safely (Only user-entered fields) ===
 $productName       = $product['name'] ?? 'Unknown Product';
 $productImage      = $product['image'] ?? 'panti.png';
-$productHoverImage = $product['hover_image'] ?? $productImage;
-$productPrice      = (int)($product['price'] ?? 0);
+$productPrice      = (float)($product['price'] ?? 0);
 $categoryName      = $product['category'] ?? 'Products';
 $description       = $product['description'] ?? 'No description available.';
-$condition         = $product['condition'] ?? 'Gently Used';
-$sizeString        = $product['sizes'] ?? 'M';
-$sizes             = array_filter(array_map('trim', explode(',', $sizeString)));
-
-// Extra images (if you have them in DB)
-$extraImages = array_filter([
-    $product['image2'] ?? null,
-    $product['image3'] ?? null,
-    $product['image4'] ?? null,
-]);
-
-$allThumbnails = array_unique(array_filter([$productImage, $productHoverImage, ...$extraImages]));
+$quantity          = $product['availability'] ?? 'available';
 ?>
 
 <!DOCTYPE html>
@@ -75,6 +63,7 @@ $allThumbnails = array_unique(array_filter([$productImage, $productHoverImage, .
 
     <!-- Navigation -->
     <?php require "Nav_bar.php"; ?>
+    <?php require "wishlist_panel.php"; ?>
 
     <div class="max-w-7xl mx-auto px-4 py-8">
 
@@ -110,18 +99,6 @@ $allThumbnails = array_unique(array_filter([$productImage, $productHoverImage, .
                         </svg>
                     </button>
                 </div>
-
-                <!-- Thumbnails -->
-                <?php if (count($allThumbnails) > 1): ?>
-                <div class="flex gap-3 flex-wrap">
-                    <?php foreach ($allThumbnails as $thumb): ?>
-                        <img src="Images/<?= htmlspecialchars($thumb) ?>"
-                             alt="Thumbnail"
-                             class="thumbnail w-20 h-20 object-cover rounded-lg border-2 border-gray-300 cursor-pointer shadow-sm"
-                             onclick="document.getElementById('mainImage').src = this.src">
-                    <?php endforeach; ?>
-                </div>
-                <?php endif; ?>
             </div>
 
             <!-- Product Details -->
@@ -129,29 +106,35 @@ $allThumbnails = array_unique(array_filter([$productImage, $productHoverImage, .
 
                 <h1 class="text-4xl font-bold text-gray-900"><?= htmlspecialchars($productName) ?></h1>
 
-                <div class="text-4xl font-bold text-gray-900">₱<?= number_format($productPrice) ?>.00</div>
+                <div class="text-4xl font-bold text-gray-900">₱<?= number_format($productPrice, 2) ?></div>
 
-                <p class="text-sm text-gray-600"><strong>Sold by:</strong> Benedictbenedt</p>
-
-                <!-- Condition -->
                 <div>
-                    <label class="block text-sm font-semibold text-gray-900 mb-2">Condition</label>
-                    <span class="px-5 py-2 bg-black text-white rounded font-medium">
-                        <?= htmlspecialchars($condition) ?>
-                    </span>
+                    <label class="block text-sm font-semibold text-gray-900 mb-2">Category</label>
+                    <p class="text-gray-700"><?= htmlspecialchars($categoryName) ?></p>
                 </div>
 
-                <!-- Size Selection -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-900 mb-3">Size</label>
-                    <div class="flex flex-wrap gap-3">
-                        <?php foreach ($sizes as $index => $size): ?>
-                            <button type="button"
-                                    onclick="selectSize(this)"
-                                    class="size-btn px-6 py-3 border-2 rounded font-medium transition <?= $index === 0 ? 'active border-black bg-black text-white' : 'border-gray-300 hover:border-black' ?>">
-                                <?= htmlspecialchars($size) ?>
-                            </button>
-                        <?php endforeach; ?>
+                <!-- Bidding Section -->
+                <div class="border-t pt-6 mt-6">
+                    <h3 class="font-semibold text-gray-900 mb-4">Make an Offer (Bidding)</h3>
+                    <div id="biddingSection" class="space-y-3">
+                        <input type="number" id="bidAmount" placeholder="Enter your bid amount" 
+                               min="<?= number_format($productPrice, 2) ?>" step="0.01" 
+                               class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500" 
+                               value="<?= number_format($productPrice, 2) ?>">
+                        <textarea id="bidMessage" placeholder="Add a message (optional)" 
+                                  class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none" 
+                                  rows="3"></textarea>
+                        <button onclick="placeBid(<?= $productId ?? 'null' ?>)"
+                                class="w-full bg-amber-500 text-white py-3 rounded-lg font-semibold hover:bg-amber-600 transition">
+                            PLACE BID
+                        </button>
+                        <div id="bidStatus" class="text-sm text-gray-600 hidden"></div>
+                        <div id="highestBidInfo" class="text-sm text-gray-600 p-3 bg-gray-50 rounded-lg hidden">
+                            <p class="font-semibold">Current Highest Bid:</p>
+                            <p id="highestBidAmount"></p>
+                            <p id="highestBidder"></p>
+                            <p id="totalBids"></p>
+                        </div>
                     </div>
                 </div>
 
@@ -164,65 +147,157 @@ $allThumbnails = array_unique(array_filter([$productImage, $productHoverImage, .
                     ADD TO BAG
                 </button>
 
-                <!-- Product Details Accordion -->
+                <!-- Description Section -->
                 <div class="border-t pt-6 mt-6">
-                    <details class="mb-4 group">
+                    <details class="group">
                         <summary class="font-semibold text-gray-900 cursor-pointer hover:text-amber-600 flex justify-between items-center">
                             Description
                             <span class="text-xl group-open:rotate-180 transition">↓</span>
                         </summary>
                         <p class="text-gray-600 mt-3 leading-relaxed"><?= nl2br(htmlspecialchars($description)) ?></p>
                     </details>
-
-                    <details class="mb-4 group">
-                        <summary class="font-semibold text-gray-900 cursor-pointer hover:text-amber-600 flex justify-between items-center">
-                            Shipping & Returns
-                            <span class="text-xl group-open:rotate-180 transition">↓</span>
-                        </summary>
-                        <p class="text-gray-600 mt-3">Standard shipping: 3–7 days • Free returns within 14 days</p>
-                    </details>
-                </div>
-            </div>
-        </div>
-
-        <!-- Seller Profile (Optional - Keep or Replace) -->
-        <div class="border-t mt-12 pt-8">
-            <div class="flex items-center justify-between bg-white border border-gray-200 rounded-xl p-6">
-                <div class="flex items-center gap-4">
-                    <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-gray-300">
-                        <img src="Images/sanemi.png" alt="Seller" class="w-full h-full object-cover">
-                    </div>
-                    <div>
-                        <h4 class="text-xl font-bold">Benedict</h4>
-                        <p class="text-sm text-gray-600">Trusted Seller</p>
-                    </div>
-                </div>
-                <div class="flex gap-4">
-                    <button class="px-6 py-3 bg-black text-white rounded font-bold hover:bg-amber-600 transition">Chat Now</button>
-                    <button class="px-6 py-3 border-2 border-gray-300 rounded font-bold hover:bg-gray-50 transition">View Shop</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        function changeMainImage(src) {
-            document.getElementById('mainImage').src = src;
-        }
-
-        function selectSize(btn) {
-            document.querySelectorAll('.size-btn').forEach(b => {
-                b.classList.remove('active', 'bg-black', 'text-white', 'border-black');
-                b.classList.add('border-gray-300');
-            });
-            btn.classList.add('active', 'bg-black', 'text-white', 'border-black');
-            btn.classList.remove('border-gray-300');
-        }
-
         function toggleWishlist(btn, productId) {
+            if (!productId) {
+                alert("Product ID not available.");
+                return;
+            }
+
             const heart = btn.querySelector('.heart-icon');
-            heart.classList.toggle('liked');
-            // Optional: AJAX call to save wishlist
+
+            // Send AJAX request to toggle wishlist
+            fetch('toggle_wishlist.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'product_id=' + productId
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response data:', data);
+                if (data.success) {
+                    if (data.liked) {
+                        heart.classList.add('liked');
+                        // Add to wishlist panel in real-time
+                        addItemToWishlistPanel(productId, data.product_name, data.price, data.image_url);
+                        showToast('Added to wishlist!');
+                    } else {
+                        heart.classList.remove('liked');
+                        // Remove from wishlist panel in real-time
+                        removeItemFromWishlistPanel(productId);
+                        showToast('Removed from wishlist');
+                    }
+                } else {
+                    alert(data.message || 'Error updating wishlist');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error: ' + error);
+            });
+        }
+
+        function addItemToWishlistPanel(productId, productName, price, imageUrl) {
+            const container = document.getElementById('wishlistItemsContainer');
+            if (!container) return;
+
+            // Check if item already exists
+            if (document.getElementById('wishlist-product-' + productId)) {
+                return;
+            }
+
+            // Remove empty message if it exists
+            const emptyMsg = container.querySelector('.text-center');
+            if (emptyMsg && emptyMsg.textContent.includes('empty')) {
+                emptyMsg.remove();
+            }
+
+            // Create item element
+            const itemHtml = `
+                <div class="border rounded-lg p-3 flex gap-3 animate-slideIn" id="wishlist-product-${productId}">
+                    <a href="product_info.php?id=${productId}" class="flex-shrink-0">
+                        <img src="uploads/${imageUrl}" alt="${productName}" class="w-16 h-16 object-cover rounded">
+                    </a>
+                    <div class="flex-1 min-w-0">
+                        <a href="product_info.php?id=${productId}" class="font-semibold text-sm hover:text-amber-600 truncate block">
+                            ${productName}
+                        </a>
+                        <p class="text-amber-600 font-bold text-sm">₱${parseFloat(price).toFixed(2)}</p>
+                        <button onclick="removeWishlistItem(${productId})" class="text-gray-500 hover:text-red-500 text-xs mt-1">
+                            Remove
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Insert at the top
+            container.insertAdjacentHTML('afterbegin', itemHtml);
+        }
+
+        function removeItemFromWishlistPanel(productId) {
+            const item = document.getElementById('wishlist-product-' + productId);
+            if (item) {
+                item.style.animation = 'fadeOut 0.3s';
+                setTimeout(() => {
+                    item.remove();
+                    // Check if empty now
+                    const container = document.getElementById('wishlistItemsContainer');
+                    if (container && !container.querySelector('[id^="wishlist-product-"]')) {
+                        container.innerHTML = '<div class="p-6 text-center text-gray-600"><p>Your wishlist is empty.</p></div>';
+                    }
+                }, 300);
+            }
+        }
+
+        function removeWishlistItem(productId) {
+            if (confirm('Remove from wishlist?')) {
+                fetch('remove_wishlist_item.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'product_id=' + productId
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        removeItemFromWishlistPanel(productId);
+                        showToast('Removed from wishlist');
+                        
+                        // Unfill the heart on product page if it exists
+                        const heartButtons = document.querySelectorAll(`button[onclick*="toggleWishlist"]`);
+                        heartButtons.forEach(btn => {
+                            const heart = btn.querySelector('.heart-icon');
+                            if (heart) {
+                                heart.classList.remove('liked');
+                            }
+                        });
+                    } else {
+                        alert('Error removing item');
+                    }
+                })
+                .catch(error => alert('Error: ' + error));
+            }
+        }
+
+        function showToast(message) {
+            // Simple toast notification
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: #333; color: white; padding: 12px 20px; border-radius: 6px; z-index: 9999; animation: fadeInOut 2s;';
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s';
+                setTimeout(() => toast.remove(), 300);
+            }, 1500);
         }
 
         function addToBag(productId) {
@@ -233,6 +308,99 @@ $allThumbnails = array_unique(array_filter([$productImage, $productHoverImage, .
             // Optional: Send AJAX to add_to_cart.php
             alert("Added to bag! (Product ID: " + productId + ")");
         }
+
+        // Bidding Functions
+        function loadBidInfo(productId) {
+            fetch('get_bids.php?product_id=' + productId)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.highest_bid) {
+                    const highestBidInfo = document.getElementById('highestBidInfo');
+                    document.getElementById('highestBidAmount').textContent = 
+                        '₱' + parseFloat(data.highest_bid.bid_amount).toFixed(2);
+                    document.getElementById('highestBidder').textContent = 
+                        'By: ' + (data.highest_bid.full_name || 'Anonymous');
+                    document.getElementById('totalBids').textContent = 
+                        'Total bids: ' + data.all_bids_count;
+                    highestBidInfo.classList.remove('hidden');
+
+                    // Set minimum bid to highest bid + 1
+                    const bidAmount = document.getElementById('bidAmount');
+                    bidAmount.min = (parseFloat(data.highest_bid.bid_amount) + 1).toFixed(2);
+
+                    // Show user's existing bid if they have one
+                    if (data.user_bid) {
+                        const bidStatus = document.getElementById('bidStatus');
+                        bidStatus.textContent = 'Your current bid: ₱' + parseFloat(data.user_bid.bid_amount).toFixed(2) + 
+                            ' (Status: ' + data.user_bid.bid_status + ')';
+                        bidStatus.classList.remove('hidden');
+                        bidAmount.value = parseFloat(data.user_bid.bid_amount).toFixed(2);
+                    }
+                }
+            })
+            .catch(error => console.error('Error loading bids:', error));
+        }
+
+        function placeBid(productId) {
+            if (!productId) {
+                alert("Product ID not available.");
+                return;
+            }
+
+            const bidAmount = document.getElementById('bidAmount').value;
+            const bidMessage = document.getElementById('bidMessage').value;
+
+            if (!bidAmount || bidAmount <= 0) {
+                alert("Please enter a valid bid amount");
+                return;
+            }
+
+            // Show loading state
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = 'Placing bid...';
+
+            const formData = new FormData();
+            formData.append('product_id', productId);
+            formData.append('bid_amount', bidAmount);
+            formData.append('bid_message', bidMessage);
+
+            fetch('place_bid.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                btn.disabled = false;
+                btn.textContent = 'PLACE BID';
+
+                if (data.success) {
+                    showToast('✓ ' + data.message);
+                    document.getElementById('bidMessage').value = '';
+                    
+                    // Reload bid info
+                    setTimeout(() => {
+                        loadBidInfo(productId);
+                    }, 500);
+                } else {
+                    alert('Error: ' + (data.message || 'Failed to place bid'));
+                }
+            })
+            .catch(error => {
+                btn.disabled = false;
+                btn.textContent = 'PLACE BID';
+                console.error('Error:', error);
+                alert('Error placing bid: ' + error);
+            });
+        }
+
+        // Load bid info on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const productId = <?= $productId ?? 'null' ?>;
+            if (productId) {
+                loadBidInfo(productId);
+            }
+        });
     </script>
 </body>
 </html>

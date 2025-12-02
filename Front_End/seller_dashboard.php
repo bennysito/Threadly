@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $first_name = $_POST['first_name'] ?? '';
     $last_name = $_POST['last_name'] ?? '';
     $username = $_POST['username'] ?? '';
-    $email = $_POST['email'] ?? '';
+    $email = trim($_POST['email'] ?? '');
     $contact_number = $_POST['contact_number'] ?? '';
     $new_password = $_POST['new_password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
@@ -136,9 +136,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error_msg = "New password and confirm password do not match!";
     } else {
         // Update user data
-        $query = "UPDATE users SET first_name=?, last_name=?, username=?, email=?, contact_number=?";
-        $params = [$first_name, $last_name, $username, $email, $contact_number];
-        $types = "sssss";
+        // Only update email if it's provided and not empty
+        if (!empty($email)) {
+            $query = "UPDATE users SET first_name=?, last_name=?, username=?, email=?, contact_number=?";
+            $params = [$first_name, $last_name, $username, $email, $contact_number];
+            $types = "sssss";
+        } else {
+            // Skip email if empty to avoid duplicate empty string error
+            $query = "UPDATE users SET first_name=?, last_name=?, username=?, contact_number=?";
+            $params = [$first_name, $last_name, $username, $contact_number];
+            $types = "ssss";
+        }
 
         if ($new_password) {
             $query .= ", user_password=?";
@@ -161,7 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'first_name' => $first_name,
                 'last_name' => $last_name,
                 'username' => $username,
-                'email' => $email,
+                'email' => !empty($email) ? $email : ($user['email'] ?? ''),
                 'contact_number' => $contact_number
             ];
             $original_user = $user;
@@ -338,7 +346,7 @@ function toggleEdit() {
             <select name="category" class="w-full input-bg" required>
               <option value="">Select a category</option>
               <?php foreach($categories as $cat): ?>
-                <option value="<?= e($cat['name'] ?? $cat['category'] ?? '') ?>"><?= e($cat['name'] ?? $cat['category'] ?? '') ?></option>
+                <option value="<?= e($cat['id'] ?? $cat['category_id'] ?? '') ?>"><?= e($cat['name'] ?? $cat['category'] ?? '') ?></option>
               <?php endforeach; ?>
             </select>
           </div>
