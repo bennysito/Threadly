@@ -4,33 +4,26 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Ensure error reporting is configured for development
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// error_reporting(E_ALL);
-
 $product = null;
 $productId = null;
 $productSellerId = null;
 
 // --------------------------------------------------------------------------------------------------
-// ⭐ FUNCTION: Renders the Seller Profile Card (Updated with 'Chat Now' Button) ⭐
+// ⭐ FUNCTION: Renders the Seller Profile Card ⭐
 // --------------------------------------------------------------------------------------------------
 
 function render_seller_profile_card($seller_id) {
     if (!$seller_id) return;
     
     // --- SIMULATED SELLER DATA (Replace with actual database fetch) ---
-    // NOTE: In a production environment, you would fetch the real username and profile pic using $seller_id
     $username = 'Threadly Seller ' . substr(md5($seller_id), 0, 4); // Simulate unique name
     $profilePicPath = 'Images/man3.png'; // Placeholder image
     
     $dashboardLink = "seller_dashboard.php?view_user=" . urlencode($seller_id); 
 
-    // CRITICAL FIX: Ensure all links and image paths are HTML escaped
     $safeDashboardLink = htmlspecialchars($dashboardLink); 
     $safeProfilePicPath = htmlspecialchars($profilePicPath);
-    $safeSellerId = htmlspecialchars($seller_id); // This ID is passed to JavaScript
+    $safeSellerId = htmlspecialchars($seller_id);
 
     echo "
     <div class='seller-profile-card bg-white p-6 shadow-lg rounded-lg border border-gray-100 mt-8'>
@@ -40,7 +33,7 @@ function render_seller_profile_card($seller_id) {
             
             <a href='{$safeDashboardLink}' class='flex-shrink-0 cursor-pointer'>
                 <img src='{$safeProfilePicPath}' alt='{$username}' 
-                                             class='w-16 h-16 object-cover rounded-full border-2 border-amber-500'>
+                    class='w-16 h-16 object-cover rounded-full border-2 border-amber-500'>
             </a>
             
             <div class='flex-1'>
@@ -51,11 +44,11 @@ function render_seller_profile_card($seller_id) {
         
         <div class='flex space-x-3 mt-4'>
             <a href='view_products.php' class='flex-1 text-center bg-gray-200 text-gray-800 font-semibold py-3 rounded-lg 
-                                 hover:bg-gray-300 transition-colors duration-200 shadow-sm'>
+                hover:bg-gray-300 transition-colors duration-200 shadow-sm'>
                 View All Products
             </a>
             <button onclick='chatNowSeller(\"{$safeSellerId}\", \"{$username}\")' class='flex-1 text-center bg-amber-500 text-white font-semibold py-3 rounded-lg 
-                                 hover:bg-amber-600 transition-colors duration-200 shadow-md'>
+                hover:bg-amber-600 transition-colors duration-200 shadow-md'>
                 Chat Now
             </button>
         </div>
@@ -70,8 +63,6 @@ function render_seller_profile_card($seller_id) {
 // === 1. Try to get product by ID ===
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $productId = (int)$_GET['id'];
-    // Correct path assumption: up one level (Front_End), then down to Back_End/Models/
-    // Adjust path if your structure is different
     $searchFilePath = __DIR__ . "/../Back_End/Models/Search_db.php";
     
     if (file_exists($searchFilePath)) {
@@ -100,13 +91,46 @@ if (!$product) {
 
 // === 3. Extract Data Safely ===
 $productId          = $product['product_id'] ?? $productId;
-$productSellerId    = $product['seller_id'] ?? $product['user_id'] ?? $product['owner_id'] ?? 101; // Default to 101 if not found
+$productSellerId    = $product['seller_id'] ?? $product['user_id'] ?? $product['owner_id'] ?? 101; 
 $productName        = $product['name'] ?? 'Unknown Product';
 $productImage       = $product['image'] ?? 'Images/panti.png';
 $productPrice       = (float)($product['price'] ?? 0);
 $categoryName       = $product['category'] ?? 'Products';
 $description        = $product['description'] ?? 'No description available.';
 $quantity           = $product['availability'] ?? 'available';
+
+// === 4. CHECK WISHLIST STATUS (NEW/FIXED LOGIC) ===
+$isProductInWishlist = false;
+
+if (isset($_SESSION['user_id']) && $productId) {
+    require_once __DIR__ . '/../Back_End/Models/Database.php'; 
+    $db = new Database();
+    $conn = $db->threadly_connect;
+    
+    $stmt = $conn->prepare("
+        SELECT 1
+        FROM wishlist w
+        JOIN wishlist_item wi ON w.wishlist_id = wi.wishlist_id
+        WHERE w.user_id = ? AND wi.product_id = ?
+        LIMIT 1
+    ");
+    
+    if ($stmt) {
+        $stmt->bind_param('ii', $_SESSION['user_id'], $productId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows > 0) {
+            $isProductInWishlist = true;
+        }
+        
+        $stmt->close();
+    }
+    
+    $db->close_db();
+}
+// ================================================
+
 ?>
 
 <!DOCTYPE html>
@@ -119,7 +143,7 @@ $quantity           = $product['availability'] ?? 'available';
     <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="CSS/produc_info.css">
     <style>
-        .heart-icon.liked { fill: #ef4444 !important; stroke: #ef4444 !important; }
+        .heart-icon.active { fill: #ef4444 !important; stroke: #ef4444 !important; }
         .size-btn.active { background-color: black; color: white; border-color: black; }
         @keyframes fadeInOut { 0%, 100% { opacity: 0; } 10%, 90% { opacity: 1; } }
         .animate-slideIn { animation: slideIn 0.3s ease-out; }
@@ -133,7 +157,9 @@ $quantity           = $product['availability'] ?? 'available';
     <?php require "wishlist_panel.php"; ?>
     <?php require "notification_panel.php"; ?> 
     <?php require "add_to_bag.php"; ?> 
-    <?php require "messages_panel.php"; ?> <div class="max-w-7xl mx-auto px-4 py-8">
+    <?php require "messages_panel.php"; ?> 
+    
+    <div class="max-w-7xl mx-auto px-4 py-8">
 
         <nav class="text-sm text-gray-600 mb-8">
             <a href="index.php" class="hover:text-black">Home</a>
@@ -151,15 +177,18 @@ $quantity           = $product['availability'] ?? 'available';
 
                 <div class="relative bg-gray-100 rounded-2xl overflow-hidden aspect-square shadow-lg">
                     <img id="mainImage"
-                                             src="<?= htmlspecialchars($productImage) ?>"
-                                             alt="<?= htmlspecialchars($productName) ?>"
-                                             class="w-full h-full object-cover">
+                        src="<?= htmlspecialchars($productImage) ?>"
+                        alt="<?= htmlspecialchars($productName) ?>"
+                        class="w-full h-full object-cover">
 
-                    <button onclick="toggleWishlist(this, <?= $productId ?? 'null' ?>)"
-                                             class="absolute top-4 right-4 p-3 bg-white rounded-full shadow-xl z-10 hover:scale-110 transition">
-                        <svg class="heart-icon w-7 h-7 text-gray-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <button onclick="window.toggleWishlist(<?= $productId ?? 'null' ?>)"
+                        class="absolute top-4 right-4 p-3 bg-white rounded-full shadow-xl z-10 hover:scale-110 transition"
+                        data-product-id="<?= $productId ?? 'null' ?>"> 
+                        <svg class="heart-icon heart w-7 h-7 text-gray-700 <?= $isProductInWishlist ? 'active' : '' ?>" 
+                            data-product-id="<?= $productId ?? 'null' ?>"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                             d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
                         </svg>
                     </button>
                 </div>
@@ -179,7 +208,7 @@ $quantity           = $product['availability'] ?? 'available';
                 
 
                 <button onclick="addToBag(<?= $productId ?? 'null' ?>)"
-                                             class="w-full bg-black text-white py-4 rounded-full font-bold text-lg hover:bg-gray-800 transition flex items-center justify-center gap-3 shadow-lg mt-4">
+                    class="w-full bg-black text-white py-4 rounded-full font-bold text-lg hover:bg-gray-800 transition flex items-center justify-center gap-3 shadow-lg mt-4">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                     </svg>
@@ -267,8 +296,6 @@ $quantity           = $product['availability'] ?? 'available';
 
         /**
          * ⭐ CHAT NOW HANDLER ⭐
-         * This function is called when the user clicks the 'Chat Now' button on the seller card.
-         * It relies on window.showMessagesPanel being defined in messages_panel.php.
          */
         function chatNowSeller(sellerId, sellerName) {
             // Check if the chat function is globally available
@@ -277,7 +304,6 @@ $quantity           = $product['availability'] ?? 'available';
                     contactId: sellerId,
                     contactName: sellerName,
                     isNewChat: true, // Indicate a new chat intent
-                    // Optional: You can pass the product details too
                     // productId: CURRENT_PRODUCT_ID 
                 });
                 console.log("Chat Now clicked for Seller ID:", sellerId);
@@ -297,8 +323,6 @@ $quantity           = $product['availability'] ?? 'available';
                 });
             }
             
-            // Assuming 'loadBidInfo' is defined in product_page_functions.js
-            // You should ensure that product_page_functions.js is loaded
             if (typeof CURRENT_PRODUCT_ID !== 'undefined' && CURRENT_PRODUCT_ID) {
                 if (typeof loadBidInfo === 'function') {
                     // loadBidInfo(CURRENT_PRODUCT_ID);

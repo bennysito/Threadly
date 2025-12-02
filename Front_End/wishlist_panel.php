@@ -7,10 +7,10 @@ if (session_status() == PHP_SESSION_NONE) {
 $isLoggedIn = isset($_SESSION['user_id']);
 
 // =================================================================================
-// === 1. PHP Data Fetching Function (Encapsulated and protected from re-declaration) ===
+// === 1. PHP Data Fetching Function (Encapsulated) - FIX APPLIED HERE ===
 // =================================================================================
 
-// Fix 1: Wrap function definition to prevent "Cannot redeclare" Fatal Error 
+// 🐛 FIX: Prevent re-declaration error by checking if the function already exists
 if (!function_exists('getWishlistData')) {
     function getWishlistData($isLoggedIn) {
         $wishlistItems = [];
@@ -26,8 +26,7 @@ if (!function_exists('getWishlistData')) {
             try {
                 $db = new Database();
                 $conn = $db->threadly_connect;
-                // Ensure user_id is cast to int before binding for security and type matching
-                $user_id = (int)$_SESSION['user_id']; 
+                $user_id = $_SESSION['user_id'];
                 
                 $sql = "
                     SELECT 
@@ -45,7 +44,6 @@ if (!function_exists('getWishlistData')) {
                 
                 $stmt = $conn->prepare($sql);
                 if ($stmt) {
-                    // Using 'i' for integer user_id
                     $stmt->bind_param('i', $user_id);
                     $stmt->execute();
                     $result = $stmt->get_result();
@@ -53,8 +51,6 @@ if (!function_exists('getWishlistData')) {
                         $wishlistItems[] = $row;
                     }
                     $stmt->close();
-                } else {
-                    error_log("SQL prepare failed: " . $conn->error);
                 }
                 $db->close_db();
             } catch (Exception $e) {
@@ -64,6 +60,10 @@ if (!function_exists('getWishlistData')) {
         return $wishlistItems;
     }
 }
+// END of getWishlistData function definition
+
+// Initial Data Fetch
+$wishlistItems = getWishlistData($isLoggedIn);
 
 
 // =================================================================================
@@ -72,50 +72,9 @@ if (!function_exists('getWishlistData')) {
 if (isset($_GET['ajax']) && $_GET['ajax'] === 'true') {
     // Re-fetch data for the AJAX call
     $wishlistItems = getWishlistData($isLoggedIn);
-    // Proceed to inner content rendering, then exit.
-
-// START of Inner Content Rendering (was the target of 'goto')
-?>
-    <?php if ($isLoggedIn): ?>
-        <?php if (empty($wishlistItems)): ?>
-            <div class="p-6 text-center text-gray-600">
-                <p>Your wishlist is empty.</p>
-            </div>
-        <?php else: ?>
-            <div class="space-y-4">
-                <?php foreach ($wishlistItems as $item): ?>
-                    <div class="border rounded-lg p-3 flex gap-3" id="wishlist-product-<?= $item['product_id'] ?>">
-                        <a href="product_info.php?id=<?= $item['product_id'] ?>" class="flex-shrink-0">
-                            <img src="uploads/<?= htmlspecialchars($item['image_url']) ?>" alt="<?= htmlspecialchars($item['product_name']) ?>" class="w-16 h-16 object-cover rounded">
-                        </a>
-                        <div class="flex-1 min-w-0">
-                            <a href="product_info.php?id=<?= $item['product_id'] ?>" class="font-semibold text-sm hover:text-amber-600 truncate block">
-                                <?= htmlspecialchars($item['product_name']) ?>
-                            </a>
-                            <p class="text-amber-600 font-bold text-sm">₱<?= number_format((float)$item['price'], 2) ?></p>
-                            <button onclick="removeWishlistItem(<?= $item['product_id'] ?>)" class="text-gray-500 hover:text-red-500 text-xs mt-1">
-                                Remove
-                            </button>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
-    <?php else: ?>
-        <div class="p-6 text-center text-gray-600">
-            <p class="mb-4">You must be logged in to view your Wishlist.</p>
-            <a href="login.php" class="text-white bg-amber-500 px-4 py-2 rounded-full font-semibold hover:bg-amber-600 transition-colors duration-200">
-                Log In Now
-            </a>
-        </div>
-    <?php endif; ?>
-<?php
-// END of Inner Content Rendering
-    exit; // Exit here to prevent rendering the full panel HTML during AJAX calls
+    // Jump to the inner content rendering part
+    goto render_wishlist_items_content; 
 }
-// Initial Data Fetch (Only executed if not an AJAX request)
-$wishlistItems = getWishlistData($isLoggedIn);
-
 
 // =================================================================================
 // === 3. Full Panel Render (Only for Initial Page Load/Include) ===
@@ -137,7 +96,8 @@ $wishlistItems = getWishlistData($isLoggedIn);
     <div id="wishlistItemsContainer" class="p-4 overflow-y-auto h-[calc(100vh-64px)]">
         
         <?php 
-        // Render initial content directly here
+        // Label for the goto statement for AJAX optimization
+        render_wishlist_items_content: 
         ?>
         
         <?php if ($isLoggedIn): ?>
@@ -157,7 +117,7 @@ $wishlistItems = getWishlistData($isLoggedIn);
                                     <?= htmlspecialchars($item['product_name']) ?>
                                 </a>
                                 <p class="text-amber-600 font-bold text-sm">₱<?= number_format((float)$item['price'], 2) ?></p>
-                                <button onclick="removeWishlistItem(<?= $item['product_id'] ?>)" class="text-gray-500 hover:text-red-500 text-xs mt-1">
+                                <button onclick="window.removeWishlistItem(<?= $item['product_id'] ?>)" class="text-gray-500 hover:text-red-500 text-xs mt-1">
                                     Remove
                                 </button>
                             </div>
@@ -247,14 +207,9 @@ $wishlistItems = getWishlistData($isLoggedIn);
             return response.text();
         })
         .then(html => {
-            // Create a temporary element to safely parse the incoming HTML content
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = html;
-            
-            // The AJAX response contains ONLY the item list content.
-            // Replace the current container content with the fresh HTML.
+            // Replace the current container content with the fresh HTML
             container.style.opacity = '0.5';
-            container.innerHTML = tempDiv.innerHTML;
+            container.innerHTML = html;
             setTimeout(() => {
                 container.style.opacity = '1';
             }, 100);
@@ -313,51 +268,24 @@ $wishlistItems = getWishlistData($isLoggedIn);
                 refreshWishlistCount();
             }
 
-        } else if (data.message && data.message.includes('log in')) {
-            // Use a custom message box instead of window.location.href to inform the user
-            if (typeof showMessageBox === 'function') {
-                 showMessageBox("Login Required", "Please log in to manage your wishlist.", () => {
-                     window.location.href = 'login.php';
-                 });
-            } else {
-                window.location.href = 'login.php'; // Fallback
-            }
+        } else if (data.message.includes('log in')) {
+            window.location.href = 'login.php';
         } else {
-             if (typeof showMessageBox === 'function') {
-                 showMessageBox("Error", data.message || 'Error processing wishlist request.');
-            } else {
-                console.error(data.message); // Fallback
-            }
+            alert(data.message || 'Error processing wishlist request.');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        // Use a message box instead of alert()
-        if (typeof showMessageBox === 'function') {
-            showMessageBox("Network Error", 'A network error occurred: ' + error.message);
-        } else {
-            console.error('A network error occurred: ' + error.message);
-        }
+        alert('A network error occurred: ' + error.message);
     });
     };
 
     /**
      * Maps the panel's "Remove" button to the unified toggle function.
-     * Uses a custom confirmation dialog instead of window.confirm().
      */
     window.removeWishlistItem = function(productId) {
-        // Fix 3: Use a placeholder for a custom confirmation modal instead of window.confirm()
-        if (typeof showConfirmationBox === 'function') {
-            showConfirmationBox(
-                'Remove Item', 
-                'Are you sure you want to remove this item from your wishlist?', 
-                () => { 
-                    window.toggleWishlist(productId);
-                }
-            );
-        } else {
-            // Fallback: If no custom dialog function exists, still proceed with removal via toggle.
-            // console.log("Using internal confirmation logic. Implement showConfirmationBox for better UX.");
+        if (confirm('Remove this item from your wishlist?')) {
+            // Simply call the main toggle function. The PHP file will handle removal.
             window.toggleWishlist(productId);
         }
     };
@@ -366,14 +294,35 @@ $wishlistItems = getWishlistData($isLoggedIn);
 </script>
 
 <style>
-    /* The CSS definitions below were slightly messy and some were incomplete. 
-        I've kept the animation names but removed the incomplete definitions 
-        that weren't fully defining the animation properties, as they weren't 
-        actually being used by any elements in the provided HTML.
-        
-        If you are using Tailwind, most styling should be in the classes.
-    */
-    .h-\[calc\(100vh-64px\)\] {
-        height: calc(100vh - 64px); /* Ensures the scrollable area fills the remaining height */
+    /* ... (CSS remains the same) ... */
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(10px);
+        }
+    }
+    
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes fadeInOut {
+        0%, 100% { opacity: 0; }
+        10%, 90% { opacity: 1; }
+    }
+    
+    .animate-slideIn {
+        animation: slideIn 0.3s ease;
     }
 </style>
