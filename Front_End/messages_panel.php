@@ -143,7 +143,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
             </div>
             <div class="flex flex-col max-w-xs">
                 <div class="bg-white rounded-2xl rounded-tl-none px-4 py-2 shadow-sm">
-                    <p class="text-sm">PA CONFIRM SIR/p>
+                    <p class="text-sm">Pa confirm unya mi sir reymark </p>
                 </div>
                 <span class="text-xs text-gray-400 mt-1 ml-2">1:35 PM</span>
             </div>
@@ -155,7 +155,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
             </div>
             <div class="flex flex-col max-w-xs">
                 <div class="bg-white rounded-2xl rounded-tl-none px-4 py-2 shadow-sm">
-                    <p class="text-sm">HELLO SIR/p>
+                    <p class="text-sm">HELLO SIR</p>
                 </div>
                 <span class="text-xs text-gray-400 mt-1 ml-2">1:36 PM</span>
             </div>
