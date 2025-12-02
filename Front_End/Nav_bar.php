@@ -80,7 +80,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
                 </svg>
             </a>
             
-            <a href="https://samtu43.github.io/Sam_chanel/" class="flex items-center text-gray-700 hover:text-amber-500 font-medium">
+            <a href="AboutUs.php" class="flex items-center text-gray-700 hover:text-amber-500 font-medium">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                     stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round"

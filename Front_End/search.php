@@ -176,7 +176,7 @@ function getSortUrl($query, $new_sort) {
                 <a href="<?= $link ?>" class="block bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition group">
                     <div class="relative">
                         <div class="aspect-square bg-gray-100 flex items-center justify-center">
-                            <img src="/Threadly/<?= htmlspecialchars($image) ?>" 
+                            <img src="<?= htmlspecialchars($image) ?>" 
                                 alt="<?= htmlspecialchars($name) ?>" 
                                 class="w-full h-full object-cover"
                                 onerror="this.src='Images/panti.png'">

@@ -8,22 +8,71 @@ $product = null;
 $productId = null;
 $productSellerId = null;
 
+// --- STATIC POOL OF NAMES FOR SIMULATION ---
+// This array is used to consistently generate a random-looking name based on seller ID.
+$seller_name_pool = [
+    'EchoThreads', 'VibrantWares', 'ZenithMarket', 'SwiftGoods', 'UrbanCanvas',
+    'GlobalSource', 'CraftedDreams', 'SolarDeals', 'NexusRetail', 'PinnacleShop',
+    'BlueSkies Trading', 'GreenLeaf Goods', 'Starlight Merchants', 'Crimson Peak Sales'
+];
+
+// --------------------------------------------------------------------------------------------------
+// ⭐ FUNCTION: Generates a consistent random name based on SELLER ID + PRODUCT ID ⭐
+// --------------------------------------------------------------------------------------------------
+function generate_random_seller_name($seller_id, $product_id, $pool) {
+    // --- ADDITIONAL STATIC POOL FOR SIMULATION ---
+    $modifier_pool = [
+        'Premium', 'Elite', 'Curated', 'Direct', 'Exclusive',
+        'Official', 'Trusted', 'Deluxe', 'Artisan', 'Fine'
+    ];
+    
+    // --- KEY CHANGE: Combine Seller ID and Product ID to create the seed ---
+    // This ensures that the same seller has a different 'random' name for each item.
+    $seed_string = $seller_id . '_' . $product_id;
+    
+    // Convert the combined string into a numeric hash
+    $hash = crc32($seed_string);
+    
+    // Use the hash to seed the random number generator
+    // This ensures the same SELLER+PRODUCT ID combination always produces the same name
+    mt_srand($hash);
+    
+    // 1. Select a base name from the primary pool
+    $base_name_index = mt_rand(0, count($pool) - 1);
+    $base_name = $pool[$base_name_index];
+    
+    // 2. Select a modifier/adjective
+    $modifier_index = mt_rand(0, count($modifier_pool) - 1);
+    $modifier = $modifier_pool[$modifier_index];
+
+    // 3. Select a random number suffix (100 to 999)
+    $suffix_number = mt_rand(100, 999);
+    
+    // Concatenate the parts for a more complex, yet consistent, random name.
+    return $modifier . ' ' . $base_name . ' ' . $suffix_number;
+}
+
 // --------------------------------------------------------------------------------------------------
 // ⭐ FUNCTION: Renders the Seller Profile Card ⭐
 // --------------------------------------------------------------------------------------------------
 
-function render_seller_profile_card($seller_id) {
-    if (!$seller_id) return;
+function render_seller_profile_card($seller_id, $product_id) { // Now requires $product_id
+    global $seller_name_pool; // Access the global name pool
+
+    if (!$seller_id || !$product_id) return;
     
     // --- SIMULATED SELLER DATA (Replace with actual database fetch) ---
-    $username = 'Threadly Seller ' . substr(md5($seller_id), 0, 4); // Simulate unique name
+    // Generate the consistent, randomized seller name using BOTH IDs
+    $username = generate_random_seller_name($seller_id, $product_id, $seller_name_pool);
+    
     $profilePicPath = 'Images/man3.png'; // Placeholder image
     
-    $dashboardLink = "seller_dashboard.php?view_user=" . urlencode($seller_id); 
+    $dashboardLink = "seller_dashboard.php?view_user=" . urlencode($seller_id);
 
-    $safeDashboardLink = htmlspecialchars($dashboardLink); 
+    $safeDashboardLink = htmlspecialchars($dashboardLink);
     $safeProfilePicPath = htmlspecialchars($profilePicPath);
     $safeSellerId = htmlspecialchars($seller_id);
+    $safeUsername = htmlspecialchars($username);
 
     echo "
     <div class='seller-profile-card bg-white p-6 shadow-lg rounded-lg border border-gray-100 mt-8'>
@@ -32,22 +81,22 @@ function render_seller_profile_card($seller_id) {
         <div class='flex items-center space-x-4 mb-4'>
             
             <a href='{$safeDashboardLink}' class='flex-shrink-0 cursor-pointer'>
-                <img src='{$safeProfilePicPath}' alt='{$username}' 
+                <img src='{$safeProfilePicPath}' alt='{$safeUsername}'
                     class='w-16 h-16 object-cover rounded-full border-2 border-amber-500'>
             </a>
             
             <div class='flex-1'>
-                <a href='{$safeDashboardLink}' class='text-2xl font-bold text-gray-900 hover:text-amber-600 transition-colors'>{$username}</a>
-                <p class='text-sm text-gray-500'>View this seller's products.</p> 
+                <a href='{$safeDashboardLink}' class='text-2xl font-bold text-gray-900 hover:text-amber-600 transition-colors'>{$safeUsername}</a>
+                <p class='text-sm text-gray-500'>View this seller's products.</p>
             </div>
         </div>
         
         <div class='flex space-x-3 mt-4'>
-            <a href='view_products.php' class='flex-1 text-center bg-gray-200 text-gray-800 font-semibold py-3 rounded-lg 
+            <a href='view_products.php' class='flex-1 text-center bg-gray-200 text-gray-800 font-semibold py-3 rounded-lg
                 hover:bg-gray-300 transition-colors duration-200 shadow-sm'>
                 View All Products
             </a>
-            <button onclick='chatNowSeller(\"{$safeSellerId}\", \"{$username}\")' class='flex-1 text-center bg-amber-500 text-white font-semibold py-3 rounded-lg 
+            <button onclick='chatNowSeller(\"{$safeSellerId}\", \"{$safeUsername}\")' class='flex-1 text-center bg-amber-500 text-white font-semibold py-3 rounded-lg
                 hover:bg-amber-600 transition-colors duration-200 shadow-md'>
                 Chat Now
             </button>
@@ -71,10 +120,11 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         $product = $search->getById($productId);
     } else {
         // Fallback for environment where backend path is not correct (use hardcoded data)
+        // Simulated Seller ID is 101 for this fallback
         $product = [
             'product_id'    => $productId,
             'seller_id'     => 101, // Simulated Seller ID
-            'name'          => 'Premium Comfort Knit Sweater',
+            'name'      => 'Premium Comfort Knit Sweater',
             'image'         => 'Images/default_product.png',
             'price'         => 850.00,
             'category'      => 'Clothing',
@@ -91,7 +141,7 @@ if (!$product) {
 
 // === 3. Extract Data Safely ===
 $productId          = $product['product_id'] ?? $productId;
-$productSellerId    = $product['seller_id'] ?? $product['user_id'] ?? $product['owner_id'] ?? 101; 
+$productSellerId    = $product['seller_id'] ?? $product['user_id'] ?? $product['owner_id'] ?? 101;
 $productName        = $product['name'] ?? 'Unknown Product';
 $productImage       = $product['image'] ?? 'Images/panti.png';
 $productPrice       = (float)($product['price'] ?? 0);
@@ -103,31 +153,35 @@ $quantity           = $product['availability'] ?? 'available';
 $isProductInWishlist = false;
 
 if (isset($_SESSION['user_id']) && $productId) {
-    require_once __DIR__ . '/../Back_End/Models/Database.php'; 
-    $db = new Database();
-    $conn = $db->threadly_connect;
-    
-    $stmt = $conn->prepare("
-        SELECT 1
-        FROM wishlist w
-        JOIN wishlist_item wi ON w.wishlist_id = wi.wishlist_id
-        WHERE w.user_id = ? AND wi.product_id = ?
-        LIMIT 1
-    ");
-    
-    if ($stmt) {
-        $stmt->bind_param('ii', $_SESSION['user_id'], $productId);
-        $stmt->execute();
-        $result = $stmt->get_result();
+    // Check if the required file exists before requiring it
+    $dbPath = __DIR__ . '/../Back_End/Models/Database.php';
+    if (file_exists($dbPath)) {
+        require_once $dbPath;
+        $db = new Database();
+        $conn = $db->threadly_connect;
         
-        if ($result->num_rows > 0) {
-            $isProductInWishlist = true;
+        $stmt = $conn->prepare("
+            SELECT 1
+            FROM wishlist w
+            JOIN wishlist_item wi ON w.wishlist_id = wi.wishlist_id
+            WHERE w.user_id = ? AND wi.product_id = ?
+            LIMIT 1
+        ");
+        
+        if ($stmt) {
+            $stmt->bind_param('ii', $_SESSION['user_id'], $productId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            if ($result->num_rows > 0) {
+                $isProductInWishlist = true;
+            }
+            
+            $stmt->close();
         }
         
-        $stmt->close();
+        $db->close_db();
     }
-    
-    $db->close_db();
 }
 // ================================================
 
@@ -155,9 +209,9 @@ if (isset($_SESSION['user_id']) && $productId) {
 
     <?php require "Nav_bar.php"; ?>
     <?php require "wishlist_panel.php"; ?>
-    <?php require "notification_panel.php"; ?> 
-    <?php require "add_to_bag.php"; ?> 
-    <?php require "messages_panel.php"; ?> 
+    <?php require "notification_panel.php"; ?>
+    <?php require "add_to_bag.php"; ?>
+    <?php require "messages_panel.php"; ?>
     
     <div class="max-w-7xl mx-auto px-4 py-8">
 
@@ -183,8 +237,8 @@ if (isset($_SESSION['user_id']) && $productId) {
 
                     <button onclick="window.toggleWishlist(<?= $productId ?? 'null' ?>)"
                         class="absolute top-4 right-4 p-3 bg-white rounded-full shadow-xl z-10 hover:scale-110 transition"
-                        data-product-id="<?= $productId ?? 'null' ?>"> 
-                        <svg class="heart-icon heart w-7 h-7 text-gray-700 <?= $isProductInWishlist ? 'active' : '' ?>" 
+                        data-product-id="<?= $productId ?? 'null' ?>">
+                        <svg class="heart-icon heart w-7 h-7 text-gray-700 <?= $isProductInWishlist ? 'active' : '' ?>"
                             data-product-id="<?= $productId ?? 'null' ?>"
                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -207,7 +261,7 @@ if (isset($_SESSION['user_id']) && $productId) {
 
                 
 
-                <button onclick="addToBag(<?= $productId ?? 'null' ?>)"
+                <button id="addToBagBtn" onclick="addToBag(<?= $productId ?? 'null' ?>)"
                     class="w-full bg-black text-white py-4 rounded-full font-bold text-lg hover:bg-gray-800 transition flex items-center justify-center gap-3 shadow-lg mt-4">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
@@ -215,9 +269,9 @@ if (isset($_SESSION['user_id']) && $productId) {
                     ADD TO BAG
                 </button>
 
-                <?php if ($productSellerId): ?>
+                <?php if ($productSellerId && $productId): ?>
                     <section id="seller-details-section">
-                        <?php render_seller_profile_card($productSellerId); ?>
+                        <?php render_seller_profile_card($productSellerId, $productId); ?>
                     </section>
                 <?php endif; ?>
                 
@@ -304,7 +358,7 @@ if (isset($_SESSION['user_id']) && $productId) {
                     contactId: sellerId,
                     contactName: sellerName,
                     isNewChat: true, // Indicate a new chat intent
-                    // productId: CURRENT_PRODUCT_ID 
+                    // productId: CURRENT_PRODUCT_ID
                 });
                 console.log("Chat Now clicked for Seller ID:", sellerId);
             } else {
@@ -315,7 +369,7 @@ if (isset($_SESSION['user_id']) && $productId) {
 
         document.addEventListener('DOMContentLoaded', function() {
             // Handler for the main profile button (assumed to be in Nav_bar.php)
-            const profileButton = document.getElementById('profileButton'); 
+            const profileButton = document.getElementById('profileButton');
             if (profileButton) {
                 profileButton.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -327,10 +381,77 @@ if (isset($_SESSION['user_id']) && $productId) {
                 if (typeof loadBidInfo === 'function') {
                     // loadBidInfo(CURRENT_PRODUCT_ID);
                 }
+        
+                // Add to Bag — calls add_to_cart.php and refreshes the bag panel
+                function addToBag(productId, qty = 1) {
+                    if (!productId) return alert('No product selected');
+
+                    const btn = document.getElementById('addToBagBtn');
+                    if (btn) btn.disabled = true;
+
+                    fetch('add_to_cart.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: 'product_id=' + encodeURIComponent(productId) + '&qty=' + encodeURIComponent(qty)
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (!data || !data.success) {
+                            if (data && data.message && data.message.includes('log in')) {
+                                window.location.href = 'login.php';
+                                return;
+                            }
+                            alert(data.message || 'Failed to add item to bag');
+                            return;
+                        }
+
+                        // Optional: show the bag panel and refresh it
+                        // Refresh the bag contents
+                        if (typeof window.refreshBagPanelContent === 'function') window.refreshBagPanelContent();
+
+                        // Try to open the bag panel using the exported function; if missing, fallback to direct DOM manipulation
+                        if (typeof window.openBagPanel === 'function') {
+                            window.openBagPanel();
+                        } else {
+                            const panel = document.getElementById('bagPanel');
+                            const overlay = document.getElementById('bagOverlay');
+                            if (panel && overlay) {
+                                panel.classList.remove('translate-x-full');
+                                overlay.classList.remove('hidden');
+                                document.body.style.overflow = 'hidden';
+                            }
+                        }
+
+                        if (typeof showToast === 'function') showToast('Added to bag');
+                    })
+                    .catch(err => {
+                        console.error('Add to bag failed', err);
+                        alert('Network error while adding to bag');
+                    })
+                    .finally(() => { if (btn) btn.disabled = false; });
+                }
+                
+                // Expose addToBag function globally for the button click
+                window.addToBag = addToBag;
             }
         });
     </script>
-    
+
+    <script>
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // --- Navbar and Panel Toggles ---
+            const profileBtn = document.getElementById('profileBtn');
+            const profileDropdown = document.getElementById('profileDropdown');
+            if(profileBtn) {
+                profileBtn.addEventListener('click', () => {
+                    profileDropdown.classList.toggle('hidden');
+                });
+            }
+        });
+    </script>
+
     <script src="js/product_page_functions.js"></script>
 </body>
 </html>

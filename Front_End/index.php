@@ -103,8 +103,8 @@ if (session_status() === PHP_SESSION_NONE) {
             <div class="carousel-slide bg-white relative">
                 <div class="container mx-auto flex items-center justify-between p-4 sm:p-8">
                     <div class="w-1/2 pr-4 lg:pr-12">
-                        <p class="text-lg sm:text-xl font-medium mb-4">
-                            The Platform Where Pre-Loved Clothing Offers Quality, Affordability, and **Sustainability**.
+                        <p class="text-lg sm:text-xl font-medium mb-5">
+                            The Platform Where Pre-Loved Clothing Offers Quality, Affordability, and Sustainability.
                         </p>
                         <h1 class="hero-headline font-chewy font-extrabold text-black">
                             Fashion For <br> Every Occasion
@@ -123,7 +123,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <div class="container mx-auto flex items-center justify-between p-4 sm:p-8">
                     <div class="w-1/2 pr-4 lg:pr-12">
                         <p class="text-lg sm:text-xl font-medium mb-4 text-amber-900">
-                            Premium knits, jackets & boots all pre-loved and perfect for the **cold season**.
+                            Premium knits, jackets & boots all pre-loved and perfect for the cold season.
                         </p>
                         <h1 class="hero-headline font-chewy font-extrabold text-amber-900">
                             Winter <br> Cozy Vibes
@@ -142,7 +142,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <div class="container mx-auto flex items-center justify-between p-4 sm:p-8">
                     <div class="w-1/2 pr-4 lg:pr-12">
                         <p class="text-lg sm:text-xl font-medium mb-4 text-teal-800">
-                            Flowy dresses, light tops & sandals **fresh finds** for sunny days ahead.
+                            Flowy dresses, light tops & sandals fresh finds for sunny days ahead.
                         </p>
                         <h1 class="hero-headline font-chewy font-extrabold text-teal-900">
                             Ready for <br> Summer Days
@@ -161,7 +161,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <div class="container mx-auto flex items-center justify-between p-4 sm:p-8">
                     <div class="w-1/2 pr-4 lg:pr-12">
                         <p class="text-lg sm:text-xl font-medium mb-4 text-purple-800">
-                            Bags, jewelry & shoes that instantly **elevate** any pre-loved outfit.
+                            Bags, jewelry & shoes that instantly elevate any pre-loved outfit.
                         </p>
                         <h1 class="hero-headline font-chewy font-extrabold text-purple-900">
                             The Perfect <br> Accessories

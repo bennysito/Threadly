@@ -117,9 +117,10 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'true') {
                                     <?= htmlspecialchars($item['product_name']) ?>
                                 </a>
                                 <p class="text-amber-600 font-bold text-sm">₱<?= number_format((float)$item['price'], 2) ?></p>
-                                <button onclick="window.removeWishlistItem(<?= $item['product_id'] ?>)" class="text-gray-500 hover:text-red-500 text-xs mt-1">
-                                    Remove
-                                </button>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <button onclick="window.addWishlistItemToCart(<?= $item['product_id'] ?>)" class="text-white bg-amber-500 px-3 py-1 rounded text-xs font-semibold hover:bg-amber-600 transition">Add to Bag</button>
+                                    <button onclick="window.removeWishlistItem(<?= $item['product_id'] ?>)" class="text-gray-500 hover:text-red-500 text-xs">Remove</button>
+                                </div>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -288,6 +289,46 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'true') {
             // Simply call the main toggle function. The PHP file will handle removal.
             window.toggleWishlist(productId);
         }
+    };
+
+    /**
+     * Add a wishlist item to the session cart so it appears in the Shopping Bag and Checkout.
+     */
+    window.addWishlistItemToCart = function(productId) {
+        const body = 'product_id=' + encodeURIComponent(productId) + '&qty=1';
+
+        fetch('add_to_cart.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: body
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (!data || !data.success) {
+                if (data && data.message && data.message.includes('log in')) {
+                    window.location.href = 'login.php';
+                    return;
+                }
+                alert(data.message || 'Failed to add to bag.');
+                return;
+            }
+
+            // Show a simple toast if available, otherwise alert
+            if (typeof showToast === 'function') showToast('Added to bag');
+
+            // Refresh wishlist panel content (so button state can change if desired)
+            window.refreshWishlistPanelContent();
+
+            // Refresh bag panel content by reloading include (if present) — simplest approach is to reload part of page
+            // If there is a global function to refresh bag panel, call it, otherwise do nothing.
+            if (typeof window.refreshBagPanelContent === 'function') {
+                window.refreshBagPanelContent();
+            }
+        })
+        .catch(err => {
+            console.error('add to bag error:', err);
+            alert('Network error while adding to bag.');
+        });
     };
     // -------------------------------------------------------------
 

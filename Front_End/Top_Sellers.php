@@ -1,45 +1,59 @@
 <?php
-// --- Configuration and Randomization Logic ---
+// --- Configuration and Static Data Definition ---
 
-// 1. Define a pool of diverse potential names
-$all_names = [
-    'Jona', 'Mark', 'Liza', 'Ethan', 'Chloe', 'Ryan', 'Sofia', 'Elias', 'Mila', 'Leo',
-    'Amelia', 'Liam', 'Olivia', 'Noah', 'Harper', 'Henry', 'Evelyn', 'Alexander', 'Ella', 'Daniel'
+// Define 12 static sellers with easily editable names and unique image source paths.
+// To change a seller, just edit the 'name' and 'image_src' for that specific entry.
+$sellers = [
+    [
+        'name' => 'Alexander',
+        'image_src' => 'Profile/alex.png', 
+    ],
+    [
+        'name' => 'Sam Mariscal', // Seller 2 Name
+        'image_src' => 'Profile/sams.png', // Replace with your image path
+    ],
+    [
+        'name' => 'Francis.', // Seller 3 Name
+        'image_src' => 'Profile/Francis.jpg', // Replace with your image path
+    ],
+    [
+        'name' => 'James.', // Seller 4 Name
+        'image_src' => 'Profile/benny.jpg', // Replace with your image path
+    ],
+    [
+        'name' => 'Naomi', // Seller 5 Name
+        'image_src' => 'Profile/Naomi.jpg', // Replace with your image path
+    ],
+    [
+        'name' => 'Renzo', // Seller 6 Name
+        'image_src' => 'Profile/reo.png', // Replace with your image path
+    ],
+    [
+        'name' => 'Maria', // Seller 7 Name
+        'image_src' => 'Profile/maria.png', // Replace with your image path
+    ],
+    [
+        'name' => 'Daven', // Seller 8 Name
+        'image_src' => 'Profile/daven.jpg', // Replace with your image path
+    ],
+    [
+        'name' => 'Walter', // Seller 9 Name
+        'image_src' => 'Profile/sammego.jpg', // Replace with your image path
+    ],
+    [
+        'name' => 'kenny.', // Seller 10 Name
+        'image_src' => 'Profile/kenny.jpg', // Replace with your image path
+    ],
+    [
+        'name' => 'Mambo', // Seller 11 Name
+        'image_src' => 'Profile/nomnom.jpg', // Replace with your image path
+    ],
+    [
+        'name' => 'Diwata', // Seller 12 Name
+        'image_src' => 'Profile/diwata.jpg', // Replace with your image path
+    ],
 ];
 
-// 2. Define 12 unique image source placeholders.
-// You can replace these empty strings with your actual 12 image URLs/paths.
-$image_sources = [
-    'Images/', // Image for Seller 1
-    '', // Image for Seller 2
-    '', // Image for Seller 3
-    '', // Image for Seller 4
-    '', // Image for Seller 5
-    '', // Image for Seller 6
-    '', // Image for Seller 7
-    '', // Image for Seller 8
-    '', // Image for Seller 9
-    '', // Image for Seller 10
-    '', // Image for Seller 11
-    '', // Image for Seller 12
-];
-
-// 3. Set the desired number of sellers to display
-$count = 12;
-
-// 4. Shuffle the names array randomly and select the first $count names
-shuffle($all_names);
-$random_sellers = array_slice($all_names, 0, $count);
-
-// 5. Structure the final sellers data, merging names and unique image paths
-$sellers = [];
-for ($i = 0; $i < $count; $i++) {
-    $sellers[] = [
-        'name' => $random_sellers[$i],
-        // Assign the unique image source from the defined array
-        'image_src' => $image_sources[$i],
-    ];
-}
 
 // Check if a session has been started (from the original request)
 if (session_status() === PHP_SESSION_NONE) {
@@ -48,22 +62,19 @@ if (session_status() === PHP_SESSION_NONE) {
 ?>
 
 <!-- Tailwind CSS is assumed to be loaded and customized for the dark theme -->
-<!-- Accent color: Green/Emerald (e.g., #34D399) -->
+<!-- Accent color: Green/Emerald (e.g., #000000ff) -->
 
-<div class="top-sellers container mx-auto py-12 px-4 sm:px-6 lg:px-8">
+<div class="top-sellers container mx-auto py-12 px-4 sm:px-6 lg:px-8 bg-white-900">
     <h2 class="text-3xl font-bold text-white mb-10 text-center">Top Sellers of the Week</h2>
 
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6">
         <?php foreach($sellers as $seller): ?>
-            <div class="flex flex-col items-center">
-                <!-- Profile Image: Placeholder for easy insertion -->
-                <div class="w-24 h-24 rounded-full border-4 border-emerald-400 flex items-center justify-center overflow-hidden shadow-xl bg-gray-800 transform hover:scale-105 transition duration-300">
+            <a href="#" class="flex flex-col items-center group">
+                <!-- Profile Image -->
+                <div class="w-24 h-24 rounded-full border-4 border-black-400 flex items-center justify-center overflow-hidden shadow-xl bg-gray-800 transform group-hover:scale-105 transition duration-300">
                     
-                    <!-- 
-                        INSTRUCTIONS: The 'src' attribute now uses $seller['image_src'], which is defined 
-                        in the $image_sources array at the top of the file. 
-                        Replace the empty strings in $image_sources array with your 12 unique image links.
-                    -->
+                    <!-- INSTRUCTIONS: The 'src' attribute uses $seller['image_src']. 
+                         Edit the paths in the $sellers array at the top of the file. -->
                     <img
                         src="<?= htmlspecialchars($seller['image_src']) ?>" 
                         alt="<?= htmlspecialchars($seller['name']) ?>'s Profile Image"
@@ -73,8 +84,10 @@ if (session_status() === PHP_SESSION_NONE) {
                     >
                 </div>
                 <!-- Seller Name -->
-                <div class="mt-3 text-sm text-gray-200 font-semibold text-center hover:text-emerald-400 transition"><?= htmlspecialchars($seller['name']) ?></div>
-            </div>
+                <div class="mt-3 text-sm text-gray-200 font-semibold text-center group-hover:text-emerald-400 transition">
+                    <?= htmlspecialchars($seller['name']) ?>
+                </div>
+            </a>
         <?php endforeach; ?>
     </div>
 </div>

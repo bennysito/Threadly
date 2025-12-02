@@ -16,15 +16,31 @@ $cartItems = $_SESSION['cart'] ?? [];
 $productsInCart = [];
 $merchandiseSubtotal = 0;
 $shippingFee = 12.00; // Fixed shipping fee
-
+$products = [];
 // --- Database/Session Logic ---
-// (Using your fallback data for demonstration)
-if (true) {
+// Use session cart items when present; otherwise fallback to demo data for development.
+if (!empty($cartItems)) {
+    foreach ($cartItems as $ci) {
+        // Normalize structure expected by the template
+        $productsInCart[] = [
+            'id' => $ci['id'] ?? ($ci['product_id'] ?? null),
+            'name' => $ci['name'] ?? ($ci['product_name'] ?? 'Unknown'),
+            'price' => floatval($ci['price'] ?? 0),
+            'qty' => intval($ci['qty'] ?? 1),
+            'total' => floatval($ci['total'] ?? (($ci['price'] ?? 0) * ($ci['qty'] ?? 1))),
+            'image_url' => $ci['image_url'] ?? '',
+            'checked' => true,
+        ];
+    }
+    foreach ($productsInCart as $p) {
+        if (!empty($p['checked'])) $merchandiseSubtotal += $p['total'];
+    }
+} else {
+    // fallback demo products
     $productsInCart = [
         ['id' => 101, 'name' => 'Jacket (Combo)', 'price' => 747.00, 'qty' => 1, 'total' => 747.00, 'image_url' => 'Images/baggy_pants.png', 'checked' => true],
         ['id' => 102, 'name' => 'Swimsuit Secondhand', 'price' => 11.00, 'qty' => 1, 'total' => 11.00, 'image_url' => 'Images/baggy_pants.png', 'checked' => false],
     ];
-    
     foreach ($productsInCart as $p) {
         if ($p['checked']) {
             $merchandiseSubtotal += $p['total'];
@@ -61,9 +77,9 @@ $totalPayment = $merchandiseSubtotal + $shippingFee;
     </script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
-<body class="min-h-screen bg-black p-4 font-sans"> 
+<body class="min-h-screen bg-white p-4 font-sans"> 
 
-    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg mt-12 sm:mt-4">
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg mt-80 sm:mt-4">
         <form id="checkoutForm" method="POST" action="process_order.php">
             
             <div class="border-b border-gray-200 p-6">
@@ -99,7 +115,9 @@ $totalPayment = $merchandiseSubtotal + $shippingFee;
                                         class="w-5 h-5 text-amber-600 rounded focus:ring-amber-500">
                                 
                                 <div class="w-16 h-16 bg-gray-100 rounded flex items-center justify-center overflow-hidden">
-                                    <img src="<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" class="object-cover w-full h-full">
+                                    <img src="<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>"
+                                            class="w-full h-full object-cover">
+                                                                        
                                 </div>
                                 
                                 <div class="flex-1">
