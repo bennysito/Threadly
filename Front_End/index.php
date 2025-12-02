@@ -37,12 +37,12 @@ if (session_status() === PHP_SESSION_NONE) {
         </div>
 
         <div>
-            <p class="ml-2 text-2xl italic font-semibold custom-inter mb-6">TOP SELLERS</p>
+            <p class="ml-2 text-3xl italic font-semibold custom-inter mb-6">TOP SELLERS</p>
             <?php require "Top_Sellers.php"; ?>
         </div>
 
         <div class="mb-12">
-            <p class="text-2xl italic font-semibold custom-inter text-center">DAILY DISCOVER</p>
+            <p class="text-3xl italic font-semibold custom-inter text-left">DAILY DISCOVER</p>
             <hr class="flex-1 border-t-2 border-black mb-2">
             <?php require "Daily_Discover.php"; ?>
         </div>
