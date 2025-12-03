@@ -63,16 +63,16 @@ if (!$item) {
 }
 
 // Initialize cart if needed
-if (!isset($_SESSION['cart']) || !is_array($_SESSION['cart'])) {
-    $_SESSION['cart'] = [];
+if (!isset($_SESSION['shopping_bag']) || !is_array($_SESSION['shopping_bag'])) {
+    $_SESSION['shopping_bag'] = [];
 }
 
 // Try to merge with existing item if present
 $found = false;
-foreach ($_SESSION['cart'] as &$c) {
-    if (isset($c['id']) && $c['id'] == $item['id']) {
-        $c['qty'] += $item['qty'];
-        $c['total'] = $c['price'] * $c['qty'];
+foreach ($_SESSION['shopping_bag'] as &$c) {
+    if (isset($c['product_id']) && $c['product_id'] == $item['id']) {
+        $c['quantity'] += $item['qty'];
+        $c['total'] = $c['price'] * $c['quantity'];
         $found = true;
         break;
     }
@@ -80,12 +80,19 @@ foreach ($_SESSION['cart'] as &$c) {
 unset($c);
 
 if (!$found) {
-    $_SESSION['cart'][] = $item;
+    $_SESSION['shopping_bag'][] = [
+        'product_id' => $item['id'],
+        'product_name' => $item['name'],
+        'price' => $item['price'],
+        'quantity' => $item['qty'],
+        'total' => $item['total'],
+        'image_url' => $item['image_url']
+    ];
 }
 
 // Return success with new cart count
-$count = count($_SESSION['cart']);
+$count = count($_SESSION['shopping_bag']);
 
-echo json_encode(['success' => true, 'message' => 'Added to cart', 'count' => $count, 'cart' => $_SESSION['cart']]);
+echo json_encode(['success' => true, 'message' => 'Added to cart', 'count' => $count, 'cart' => $_SESSION['shopping_bag']]);
 
 ?>

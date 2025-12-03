@@ -61,13 +61,18 @@ class Bidding {
     // Get all bids for a product
     public function getBidsForProduct($product_id) {
         $stmt = $this->conn->prepare("
-            SELECT b.bid_id, b.product_id, b.bid_message, b.bid_status, b.session_id, b.bid_amount,
-            ,b.bit_team, u.full_name, u.email
+            SELECT b.bid_id, b.product_id, b.bid_message, b.bid_status, b.bid_amount,
+            b.created_at, u.username, u.email
             FROM bids b
             JOIN users u ON b.user_id = u.user_id
             WHERE b.product_id = ?
             ORDER BY b.bid_amount DESC, b.created_at DESC
         ");
+        
+        if (!$stmt) {
+            error_log("Prepare failed: " . $this->conn->error);
+            return [];
+        }
         
         $stmt->bind_param('i', $product_id);
         $stmt->execute();
@@ -80,14 +85,43 @@ class Bidding {
 
     // Get user's bids
     public function getUserBids($user_id) {
-        $stmt = $this->conn->prepare("
-            SELECT b.bid_id, b.product_id, b.bid_message, b.bid_status, b.session_id, b.bid_amount,
-            b.bit_time, p.product_name, p.image_url, p.price
-            FROM bids b
-            JOIN products p ON b.product_id = p.product_id
-            WHERE b.user_id = ?
-            ORDER BY b.bit_time DESC
-        ");
+        // First check what columns exist in the bids table
+        $colRes = $this->conn->query("SHOW COLUMNS FROM bids");
+        $existingCols = [];
+        if ($colRes) {
+            while ($row = $colRes->fetch_assoc()) {
+                $existingCols[] = $row['Field'];
+            }
+        }
+        
+        // Query based on available columns
+        if (in_array('product_id', $existingCols)) {
+            // New schema with product_id
+            $stmt = $this->conn->prepare("
+                SELECT b.bid_id, b.product_id, b.bid_message, b.bid_status, b.bid_amount,
+                b.created_at, p.product_name, p.image_url, p.price
+                FROM bids b
+                JOIN products p ON b.product_id = p.product_id
+                WHERE b.user_id = ?
+                ORDER BY b.created_at DESC
+            ");
+        } else {
+            // Old schema - need to get product_id from bidding_session
+            $stmt = $this->conn->prepare("
+                SELECT b.bid_id, bs.product_id, b.bid_message, b.bid_status, b.bid_amount,
+                b.created_at, p.product_name, p.image_url, p.price
+                FROM bids b
+                LEFT JOIN bidding_session bs ON b.session_id = bs.session_id
+                LEFT JOIN products p ON bs.product_id = p.product_id
+                WHERE b.user_id = ?
+                ORDER BY b.created_at DESC
+            ");
+        }
+        
+        if (!$stmt) {
+            error_log("Prepare failed: " . $this->conn->error);
+            return [];
+        }
         
         $stmt->bind_param('i', $user_id);
         $stmt->execute();
@@ -108,6 +142,11 @@ class Bidding {
             LIMIT 1
         ");
         
+        if (!$stmt) {
+            error_log("Prepare failed: " . $this->conn->error);
+            return null;
+        }
+        
         $stmt->bind_param('ii', $user_id, $product_id);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -120,13 +159,18 @@ class Bidding {
     // Get highest bid for a product
     public function getHighestBid($product_id) {
         $stmt = $this->conn->prepare("
-            SELECT b.bid_id, b.user_id, b.bid_amount, b.bid_status, b.created_at, u.full_name
+            SELECT b.bid_id, b.user_id, b.bid_amount, b.bid_status, b.created_at, u.username
             FROM bids b
             JOIN users u ON b.user_id = u.user_id
             WHERE b.product_id = ? AND b.bid_status = 'pending'
             ORDER BY b.bid_amount DESC, b.created_at DESC
             LIMIT 1
         ");
+        
+        if (!$stmt) {
+            error_log("Prepare failed: " . $this->conn->error);
+            return null;
+        }
         
         $stmt->bind_param('i', $product_id);
         $stmt->execute();

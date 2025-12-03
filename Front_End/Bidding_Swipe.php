@@ -2,23 +2,53 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-?>
 
-<?php
+require_once "../Back_End/Models/Database.php";
 
-$products = [
-    ['name' => 'Red Jacket',          'image' => 'Images/jacket_hoodie.png', 'top' => true,  'price' => 1200],
-    ['name' => 'Blue Hoodie',         'image' => 'Images/jacket_hoodie.png', 'top' => true,  'price' => 950],
-    ['name' => 'White Sneakers',      'image' => 'Images/jacket_hoodie.png', 'top' => true,  'price' => 1800],
-    ['name' => 'Black Cargo Pants',   'image' => 'Images/jacket_hoodie.png', 'top' => false, 'price' => 890],
-    ['name' => 'Denim Overshirt',     'image' => 'Images/jacket_hoodie.png', 'top' => true,  'price' => 1499],
-    ['name' => 'Leather Boots',       'image' => 'Images/jacket_hoodie.png', 'top' => false, 'price' => 2390],
-    ['name' => 'Knit Beanie',         'image' => 'Images/jacket_hoodie.png', 'top' => false, 'price' => 390],
-    ['name' => 'Puffer Vest',         'image' => 'Images/jacket_hoodie.png', 'top' => true,  'price' => 1690],
-    ['name' => 'Flannel Shirt',       'image' => 'Images/jacket_hoodie.png', 'top' => false, 'price' => 799],
-    ['name' => 'Wool Coat',           'image' => 'Images/jacket_hoodie.png', 'top' => true,  'price' => 3290],
-    ['name' => 'Track Jacket',        'image' => 'Images/jacket_hoodie.png', 'top' => false, 'price' => 1190],
-];
+// Fetch products with bidding enabled
+$products = [];
+$db = new Database();
+$conn = $db->threadly_connect;
+
+// Check if bidding column exists
+$colRes = $conn->query("SHOW COLUMNS FROM products LIKE 'bidding'");
+$hasBiddingColumn = ($colRes && $colRes->num_rows > 0);
+
+if ($hasBiddingColumn) {
+    // Fetch products where bidding is enabled
+    $sql = "SELECT product_id, product_name, price, image_url, bidding 
+            FROM products 
+            WHERE bidding = 1 AND quantity > 0
+            ORDER BY product_id DESC
+            LIMIT 20";
+} else {
+    // Fallback: fetch recent products if bidding column doesn't exist yet
+    $sql = "SELECT product_id, product_name, price, image_url 
+            FROM products 
+            WHERE quantity > 0
+            ORDER BY product_id DESC
+            LIMIT 20";
+}
+
+$result = $conn->query($sql);
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $products[] = [
+            'id' => $row['product_id'],
+            'name' => $row['product_name'],
+            'price' => $row['price'],
+            'image' => $row['image_url'] ? 'uploads/' . $row['image_url'] : 'Images/jacket_hoodie.png',
+            'top' => false  // Can be customized based on business logic
+        ];
+    }
+}
+
+// If no products with bidding enabled, show a fallback message or placeholder
+if (empty($products)) {
+    $products = [
+        ['id' => 0, 'name' => 'No Bidding Products', 'price' => 0, 'image' => 'Images/jacket_hoodie.png', 'top' => false],
+    ];
+}
 ?>
 
 <div class="bidding-swiper-container my-8">
@@ -27,24 +57,23 @@ $products = [
       <?php foreach($products as $prod): ?>
         <div class="swiper-slide">
           <div class="card-hover group">
-            <div class="relative bg-white rounded-xl overflow-hidden border border-gray-100">
-              <div class="aspect-square bg-gray-50 ">
-                <img src="<?= $prod['image'] ?>" 
+            <a href="product_info.php?id=<?= htmlspecialchars($prod['id']) ?>" class="relative bg-white rounded-xl overflow-hidden border border-gray-100 block hover:shadow-md transition">
+              <div class="aspect-square bg-gray-50">
+                <img src="<?= htmlspecialchars($prod['image']) ?>" 
                      alt="<?= htmlspecialchars($prod['name']) ?>" 
                      class="w-full h-full object-contain drop-shadow-sm">
                 
-                <?php if($prod['top']): ?>
-                  <div class="absolute top-3 left-3 px-3 py-1 bg-black text-white text-xs font-bold rounded-full">
-                    TOP
-                  </div>
-                <?php endif; ?>
+                <div class="absolute top-3 left-3 px-3 py-1 bg-amber-600 text-white text-xs font-bold rounded-full">
+                  BIDDING
+                </div>
               </div>
 
               <div class="p-4">
                 <h3 class="text-sm font-medium text-gray-800 truncate"><?= htmlspecialchars($prod['name']) ?></h3>
-                <p class="text-lg font-bold text-gray-900 mt-1">₱<?= number_format($prod['price']) ?></p>
+                <p class="text-lg font-bold text-amber-600 mt-1">₱<?= number_format($prod['price'], 2) ?></p>
+                <p class="text-xs text-gray-500 mt-2">Click to place bid</p>
               </div>
-            </div>
+            </a>
           </div>
         </div>
       <?php endforeach; ?>

@@ -62,23 +62,109 @@ try {
         exit;
     }
 
-    // Place the bid using Bidding class
-    $bidding = new Bidding();
-    $bidResult = $bidding->placeBid($product_id, $user_id, $bid_amount, $bid_message);
+    // Try to insert bid directly, handling both old and new table schemas
+    $insertSuccess = false;
+    $insertError = '';
+    $bidId = null;
     
-    if ($bidResult['success']) {
+    // First, try to check what columns exist in the bids table
+    $colRes = $conn->query("SHOW COLUMNS FROM bids");
+    $existingCols = [];
+    if ($colRes) {
+        while ($row = $colRes->fetch_assoc()) {
+            $existingCols[] = $row['Field'];
+        }
+    }
+    
+    // Build the INSERT statement based on available columns
+    if (in_array('product_id', $existingCols)) {
+        // New schema - has product_id column
+        $stmt = $conn->prepare("
+            INSERT INTO bids (product_id, user_id, bid_amount, bid_message, bid_status)
+            VALUES (?, ?, ?, ?, 'pending')
+        ");
+        if ($stmt) {
+            $stmt->bind_param('iids', $product_id, $user_id, $bid_amount, $bid_message);
+            if ($stmt->execute()) {
+                $insertSuccess = true;
+                $bidId = $stmt->insert_id;
+            } else {
+                $insertError = $stmt->error;
+            }
+            $stmt->close();
+        } else {
+            $insertError = $conn->error;
+        }
+    } else {
+        // Old schema - has session_id, no product_id
+        // Create or get session for this product
+        $sessionStmt = $conn->prepare("
+            SELECT session_id FROM bidding_session 
+            WHERE product_id = ? AND status = 'ongoing'
+            LIMIT 1
+        ");
+        
+        if ($sessionStmt) {
+            $sessionStmt->bind_param('i', $product_id);
+            $sessionStmt->execute();
+            $sessionResult = $sessionStmt->get_result();
+            $sessionRow = $sessionResult->fetch_assoc();
+            $session_id = $sessionRow['session_id'] ?? null;
+            $sessionStmt->close();
+            
+            // If no session exists, create one
+            if (!$session_id) {
+                $createSessionStmt = $conn->prepare("
+                    INSERT INTO bidding_session (product_id, start_time, end_time, status)
+                    VALUES (?, NOW(), DATE_ADD(NOW(), INTERVAL 7 DAY), 'ongoing')
+                ");
+                if ($createSessionStmt) {
+                    $createSessionStmt->bind_param('i', $product_id);
+                    if ($createSessionStmt->execute()) {
+                        $session_id = $conn->insert_id;
+                    }
+                    $createSessionStmt->close();
+                }
+            }
+            
+            // Now insert the bid with session_id
+            if ($session_id) {
+                $stmt = $conn->prepare("
+                    INSERT INTO bids (session_id, user_id, bid_amount)
+                    VALUES (?, ?, ?)
+                ");
+                if ($stmt) {
+                    $stmt->bind_param('iid', $session_id, $user_id, $bid_amount);
+                    if ($stmt->execute()) {
+                        $insertSuccess = true;
+                        $bidId = $stmt->insert_id;
+                    } else {
+                        $insertError = $stmt->error;
+                    }
+                    $stmt->close();
+                } else {
+                    $insertError = $conn->error;
+                }
+            } else {
+                $insertError = "Could not create bidding session";
+            }
+        } else {
+            $insertError = $conn->error;
+        }
+    }
+    
+    if ($insertSuccess) {
         echo json_encode([
             'success' => true,
             'message' => 'Bid placed successfully!',
-            'bid_id' => $bidResult['bid_id'],
+            'bid_id' => $bidId,
             'bid_amount' => $bid_amount,
             'product_name' => $product['product_name']
         ]);
     } else {
-        echo json_encode(['success' => false, 'message' => $bidResult['message']]);
+        echo json_encode(['success' => false, 'message' => 'Failed to place bid: ' . $insertError]);
     }
     
-    $bidding->closeConnection();
     $db->close_db();
     
 } catch (Exception $e) {

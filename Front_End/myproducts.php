@@ -30,6 +30,42 @@ if ($stmt) {
     $stmt->close();
 }
 
+// Fetch bids for seller's products
+$sellerBids = [];
+$bidsSql = "
+    SELECT 
+        b.bid_id, 
+        b.product_id, 
+        b.user_id,
+        b.bid_amount, 
+        b.bid_status, 
+        b.bid_message, 
+        b.created_at,
+        p.product_name, 
+        p.image_url, 
+        p.price,
+        u.username,
+        u.email,
+        u.contact_number,
+        u.first_name,
+        u.last_name
+    FROM bids b
+    JOIN products p ON b.product_id = p.product_id
+    JOIN users u ON b.user_id = u.user_id
+    WHERE p.seller_id = ?
+    ORDER BY b.created_at DESC
+";
+$bidsStmt = $conn->prepare($bidsSql);
+if ($bidsStmt) {
+    $bidsStmt->bind_param('i', $user_id);
+    $bidsStmt->execute();
+    $bidsResult = $bidsStmt->get_result();
+    while ($row = $bidsResult->fetch_assoc()) {
+        $sellerBids[] = $row;
+    }
+    $bidsStmt->close();
+}
+
 ?>
 
 <style>
@@ -309,6 +345,221 @@ if ($stmt) {
     .modal-btn-save:hover {
         background-color: #92400e;
     }
+    
+    /* Bids Section Styles */
+    .bids-section {
+        margin-top: 3rem;
+        padding: 2rem;
+        background-color: #f9fafb;
+        border-radius: 12px;
+    }
+    
+    .bids-section h2 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: #1f2937;
+    }
+    
+    .bid-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-bottom: 1.5rem;
+        transition: all 0.25s ease;
+    }
+    
+    .bid-card:hover {
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+    
+    .bid-header {
+        display: flex;
+        gap: 1rem;
+        padding: 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+        align-items: flex-start;
+    }
+    
+    .bid-product-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 8px;
+        overflow: hidden;
+        flex-shrink: 0;
+        background: #f3f4f6;
+    }
+    
+    .bid-product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .bid-product-info {
+        flex: 1;
+    }
+    
+    .bid-product-name {
+        font-weight: 600;
+        color: #111;
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .bid-product-price {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+    
+    .bid-product-price strong {
+        color: #111;
+        font-weight: 600;
+    }
+    
+    .bid-status-badge {
+        display: inline-block;
+        padding: 0.35rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    
+    .bid-status-pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+    
+    .bid-status-accepted {
+        background: #d1fae5;
+        color: #065f46;
+    }
+    
+    .bid-status-rejected {
+        background: #fee2e2;
+        color: #7f1d1d;
+    }
+    
+    .bid-details {
+        padding: 1.5rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .bid-detail-item {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .bid-detail-label {
+        font-size: 0.85rem;
+        color: #666;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .bid-detail-value {
+        font-size: 1.05rem;
+        color: #111;
+        font-weight: 600;
+    }
+    
+    .bid-amount-highlight {
+        font-size: 1.75rem;
+        color: #b45309;
+    }
+    
+    .bid-customer-info {
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+    
+    .bid-customer-name {
+        font-weight: 700;
+        color: #111;
+    }
+    
+    .bid-message {
+        background-color: #f3f4f6;
+        padding: 1rem;
+        border-left: 3px solid #b45309;
+        border-radius: 4px;
+        font-size: 0.95rem;
+        color: #374151;
+        font-style: italic;
+    }
+    
+    .bid-actions {
+        padding: 1.5rem;
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+    
+    .bid-action-btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+    }
+    
+    .bid-approve-btn {
+        background-color: #10b981;
+        color: white;
+    }
+    
+    .bid-approve-btn:hover {
+        background-color: #059669;
+    }
+    
+    .bid-reject-btn {
+        background-color: #ef4444;
+        color: white;
+    }
+    
+    .bid-reject-btn:hover {
+        background-color: #dc2626;
+    }
+    
+    .bid-action-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    
+    .no-bids-message {
+        text-align: center;
+        padding: 2rem;
+        color: #666;
+    }
+    
+    .no-bids-message p {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .bid-header {
+            flex-direction: column;
+        }
+        
+        .bid-details {
+            grid-template-columns: 1fr;
+        }
+        
+        .bid-actions {
+            justify-content: center;
+        }
+    }
 </style>
 
 <?php if (empty($sellerProducts)): ?>
@@ -403,7 +654,154 @@ if ($stmt) {
     </div>
 </div>
 
+<!-- Bids Section -->
+<div class="bids-section">
+    <h2>Received Bids</h2>
+    
+    <?php if (empty($sellerBids)): ?>
+        <div class="no-bids-message">
+            <p>You haven't received any bids yet.</p>
+            <p style="font-size: 0.9rem; color: #999;">When customers place bids on your products, they will appear here.</p>
+        </div>
+    <?php else: ?>
+        <?php foreach ($sellerBids as $bid): ?>
+            <div class="bid-card" data-bid-id="<?= $bid['bid_id'] ?>">
+                <!-- Product and Status Header -->
+                <div class="bid-header">
+                    <div class="bid-product-image">
+                        <?php if (!empty($bid['image_url'])): ?>
+                            <img src="uploads/<?= e($bid['image_url']) ?>" alt="<?= e($bid['product_name']) ?>">
+                        <?php else: ?>
+                            <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#f3f4f6; color:#999; font-size:0.8rem; text-align:center; padding: 0.5rem;">No Image</div>
+                        <?php endif; ?>
+                    </div>
+                    <div class="bid-product-info">
+                        <div class="bid-product-name"><?= e($bid['product_name']) ?></div>
+                        <div class="bid-product-price">Original Price: <strong>₱<?= number_format((float)$bid['price'], 2) ?></strong></div>
+                        <span class="bid-status-badge bid-status-<?= $bid['bid_status'] ?>">
+                            <?= ucfirst($bid['bid_status']) ?>
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Bid Details -->
+                <div class="bid-details">
+                    <div class="bid-detail-item">
+                        <div class="bid-detail-label">Bid Amount</div>
+                        <div class="bid-detail-value bid-amount-highlight">₱<?= number_format((float)$bid['bid_amount'], 2) ?></div>
+                    </div>
+                    
+                    <div class="bid-detail-item">
+                        <div class="bid-detail-label">Customer</div>
+                        <div class="bid-customer-info">
+                            <div class="bid-customer-name"><?= e($bid['first_name'] . ' ' . $bid['last_name']) ?></div>
+                            <div style="color: #666; font-size: 0.9rem;">@<?= e($bid['username']) ?></div>
+                        </div>
+                    </div>
+                    
+                    <div class="bid-detail-item">
+                        <div class="bid-detail-label">Contact</div>
+                        <div style="font-size: 0.95rem; color: #111;">
+                            <div><?= e($bid['email']) ?></div>
+                            <div><?= e($bid['contact_number']) ?></div>
+                        </div>
+                    </div>
+                    
+                    <div class="bid-detail-item">
+                        <div class="bid-detail-label">Date</div>
+                        <div style="font-size: 0.95rem; color: #111;">
+                            <?php 
+                            $date = new DateTime($bid['created_at']);
+                            echo $date->format('M d, Y h:i A');
+                            ?>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Message (if available) -->
+                <?php if (!empty($bid['bid_message'])): ?>
+                    <div style="padding: 0 1.5rem; border-bottom: 1px solid #e5e7eb;">
+                        <div class="bid-detail-label" style="margin-bottom: 0.75rem;">Message from Customer</div>
+                        <div class="bid-message"><?= e($bid['bid_message']) ?></div>
+                    </div>
+                <?php endif; ?>
+                
+                <!-- Action Buttons -->
+                <div class="bid-actions">
+                    <?php if ($bid['bid_status'] === 'pending'): ?>
+                        <button class="bid-action-btn bid-approve-btn" onclick="updateBidStatus(<?= $bid['bid_id'] ?>, 'accepted')">
+                            ✓ Approve Bid
+                        </button>
+                        <button class="bid-action-btn bid-reject-btn" onclick="updateBidStatus(<?= $bid['bid_id'] ?>, 'rejected')">
+                            ✗ Reject Bid
+                        </button>
+                    <?php else: ?>
+                        <button class="bid-action-btn" style="background-color: #9ca3af; color: white;" disabled>
+                            <?= ucfirst($bid['bid_status']) ?>
+                        </button>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</div>
+
 <script>
+function updateBidStatus(bidId, status) {
+    const statusText = status === 'accepted' ? 'approve' : 'reject';
+    if (!confirm('Are you sure you want to ' + statusText + ' this bid?')) {
+        return;
+    }
+    
+    fetch('update_bid_status.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'bid_id=' + bidId + '&bid_status=' + status
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Update response:', data);
+        if (data.success) {
+            // Update the bid card UI immediately
+            const bidCard = document.querySelector('[data-bid-id="' + bidId + '"]');
+            if (bidCard) {
+                // Find the status badge and update it
+                const statusBadge = bidCard.querySelector('.bid-status-badge');
+                if (statusBadge) {
+                    // Remove all status classes
+                    statusBadge.classList.remove('bid-status-pending', 'bid-status-accepted', 'bid-status-rejected');
+                    // Add new status class
+                    statusBadge.classList.add('bid-status-' + status);
+                    // Update text
+                    statusBadge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+                }
+                
+                // Hide/update action buttons
+                const actionButtons = bidCard.querySelector('.bid-actions');
+                if (actionButtons) {
+                    actionButtons.innerHTML = '<button class="bid-action-btn" style="background-color: #9ca3af; color: white;" disabled>' + 
+                                              (status.charAt(0).toUpperCase() + status.slice(1)) + 
+                                              '</button>';
+                }
+            }
+            
+            // Show success message AFTER updating UI
+            alert('Bid ' + statusText + 'ed successfully!');
+            
+            // Don't reload - keep the change persistent
+        } else {
+            alert('Error: ' + (data.message || 'Failed to update bid status'));
+            console.error('Update failed:', data);
+        }
+    })
+    .catch(error => {
+        alert('Error: ' + error);
+        console.error('Fetch error:', error);
+    });
+}
+
 function editStock(productId, currentStock) {
     document.getElementById('stock-display-' + productId).style.display = 'none';
     const editDiv = document.getElementById('stock-edit-' + productId);

@@ -21,6 +21,7 @@ $product_name = trim($_POST['product_name'] ?? '');
 $price = floatval($_POST['price'] ?? 0);
 $quantity = intval($_POST['quantity'] ?? 0);
 $description = trim($_POST['description'] ?? '');
+$pbidding = isset($_POST['bidding']) ? 1 : null;
 
 // Validate input
 if ($product_id <= 0) {
@@ -51,8 +52,8 @@ if (empty($description)) {
 $db = new Database();
 $conn = $db->threadly_connect;
 
-// Verify the product belongs to the current user
-$verifyStmt = $conn->prepare("SELECT product_id FROM products WHERE product_id = ? AND seller_id = ?");
+// Verify the product belongs to the current user (handle NULL seller_id)
+$verifyStmt = $conn->prepare("SELECT product_id FROM products WHERE product_id = ? AND (seller_id = ? OR seller_id IS NULL)");
 if (!$verifyStmt) {
     echo json_encode(['success' => false, 'message' => 'Database error']);
     exit;
@@ -71,14 +72,40 @@ if ($result->num_rows === 0) {
 
 $verifyStmt->close();
 
-// Update the product details
-$updateStmt = $conn->prepare("UPDATE products SET product_name = ?, price = ?, quantity = ?, description = ? WHERE product_id = ? AND seller_id = ?");
+// Update the product details - also assign seller_id if NULL
+$updateCols = "seller_id = ?, product_name = ?, price = ?, quantity = ?, description = ?";
+$updateTypes = 'isdis';
+$updateParams = [$user_id, $product_name, $price, $quantity, $description];
+
+// If the products table contains a 'bidding' column, include it in the update
+$colRes = $conn->query("SHOW COLUMNS FROM products LIKE 'bidding'");
+if ($colRes && $colRes->num_rows > 0) {
+    // treat null (not provided) as 0 for safety
+    $bval = ($pbidding === null) ? 0 : intval($pbidding);
+    $updateCols .= ", bidding = ?";
+    $updateTypes .= 'i';
+    $updateParams[] = $bval;
+}
+
+$updateCols .= " WHERE product_id = ? AND (seller_id = ? OR seller_id IS NULL)";
+$updateTypes .= 'ii';
+$updateParams[] = $product_id;
+$updateParams[] = $user_id;
+
+$sql = "UPDATE products SET " . $updateCols;
+$updateStmt = $conn->prepare($sql);
 if (!$updateStmt) {
-    echo json_encode(['success' => false, 'message' => 'Database error']);
+    echo json_encode(['success' => false, 'message' => 'Database error: ' . $conn->error]);
     exit;
 }
 
-$updateStmt->bind_param('sdisii', $product_name, $price, $quantity, $description, $product_id, $user_id);
+// bind_param requires references
+$bindArr = [];
+$bindArr[] = $updateTypes;
+for ($i = 0; $i < count($updateParams); $i++) {
+    $bindArr[] = &$updateParams[$i];
+}
+call_user_func_array([$updateStmt, 'bind_param'], $bindArr);
 
 if ($updateStmt->execute()) {
     echo json_encode(['success' => true, 'message' => 'Product details updated successfully']);

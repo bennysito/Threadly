@@ -1,0 +1,10 @@
+{
+  version: 1,
+  mediaFileName: 'short form content practice.mp4',
+  cutSegments: [
+    {
+      end: 16.232956,
+      name: '',
+    },
+  ],
+}

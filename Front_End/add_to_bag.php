@@ -33,8 +33,8 @@ function renderBagContent($bagItems) {
             </div>
         <?php else: ?>
             <?php foreach ($bagItems as $item): 
-                // Use a default name and image if not set, and ensure product_id is set for key
-                $product_id = htmlspecialchars($item['product_id'] ?? uniqid());
+                // Use product_id for removing items
+                $product_id = htmlspecialchars($item['product_id'] ?? '');
             ?>
                 <div class="flex gap-4 mb-4 pb-4 border-b border-gray-200">
                     <img src="uploads/<?= htmlspecialchars($item['image_url'] ?? 'Images/jacket_hoodie.png') ?>"
@@ -44,7 +44,7 @@ function renderBagContent($bagItems) {
                         <h3 class="font-semibold text-sm"><?= htmlspecialchars($item['product_name'] ?? 'Product') ?></h3>
                         <p class="text-amber-600 font-bold">₱<?= number_format($item['price'] ?? 0, 2) ?></p>
                         <p class="text-xs text-gray-500">Qty: <?= intval($item['quantity'] ?? 1) ?></p>
-                        <button onclick="window.removeItemFromBag('<?= $product_id ?>')" class="text-xs text-red-500 hover:text-red-700 mt-1">Remove</button>
+                        <button onclick="window.removeItemFromBag(<?= $product_id ?>)" class="text-xs text-red-500 hover:text-red-700 mt-1">Remove</button>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -154,9 +154,7 @@ $hasItems = !empty($bagItems);
     // --- DUMMY FUNCTION FOR REMOVING ITEMS (Needs server-side implementation in remove_from_cart.php) ---
     function removeItemFromBag(productId) {
         console.log("Removing item:", productId);
-        // Implement AJAX call to remove_from_cart.php here
-        // Example:
-        /*
+        
         fetch('remove_from_cart.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -169,10 +167,11 @@ $hasItems = !empty($bagItems);
             } else {
                 alert(data.message || 'Failed to remove item.');
             }
+        })
+        .catch(error => {
+            console.error('Remove error:', error);
+            alert('Error removing item from bag');
         });
-        */
-        // For demonstration, just refresh the panel
-        refreshBagPanelContent();
     }
 
 

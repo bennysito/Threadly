@@ -82,12 +82,18 @@ function getSortUrl($query, $new_sort) {
 <!doctype html>
 <html lang="en">
 <head>
-<link href="https://fonts.googleapis.com/css2?family=Chewy&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Chewy&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Search results - Threadly</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
+body {
+    font-family: 'Inter', sans-serif;
+}
+.font-chewy {
+    font-family: 'Chewy', cursive;
+}
     /* Styling to match the bold, distressed look of the SEARCH RESULTS text */
     .chewy-font {
         font-family: 'Chewy', cursive;
