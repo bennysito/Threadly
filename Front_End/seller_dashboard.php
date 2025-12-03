@@ -515,6 +515,22 @@ window.addEventListener('load', function() {
 });
 
 </script>
+
+<script>
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // --- Navbar and Panel Toggles ---
+            const profileBtn = document.getElementById('profileBtn');
+            const profileDropdown = document.getElementById('profileDropdown');
+            if(profileBtn) {
+                profileBtn.addEventListener('click', () => {
+                    profileDropdown.classList.toggle('hidden');
+                });
+            }
+        });
+</script>
+
 </body>
 </html>
 

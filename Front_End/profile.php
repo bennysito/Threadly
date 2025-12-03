@@ -154,6 +154,11 @@ function toggleEdit() {
 
 <?php include 'nav_bar.php'; ?>
 
+    <?php require "wishlist_panel.php"; ?>
+    <?php require "notification_panel.php"; ?> 
+    <?php require "add_to_bag.php"; ?> 
+    <?php require "messages_panel.php"; ?> 
+
 <main class="max-w-6xl mx-auto px-6 py-10">
   <div class="bg-white rounded-xl shadow p-6">
 
@@ -239,5 +244,19 @@ document.getElementById('profileForm').addEventListener('submit', function(e) {
 });
 </script>
 
+<script>
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // --- Navbar and Panel Toggles ---
+            const profileBtn = document.getElementById('profileBtn');
+            const profileDropdown = document.getElementById('profileDropdown');
+            if(profileBtn) {
+                profileBtn.addEventListener('click', () => {
+                    profileDropdown.classList.toggle('hidden');
+                });
+            }
+        });
+    </script>
 </body>
 </html>
