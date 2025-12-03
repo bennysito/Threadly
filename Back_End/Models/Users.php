@@ -47,9 +47,12 @@ class User {
     ============================ */
     public function login($username, $password) {
 
+        // Try to find user by username, email, or contact_number
         $stmt = $this->conn->prepare(
             "SELECT id, username, user_password, first_name, last_name 
-             FROM users WHERE username = ? LIMIT 1"
+             FROM users 
+             WHERE username = ? OR email = ? OR contact_number = ? 
+             LIMIT 1"
         );
 
         if (!$stmt) {
@@ -57,7 +60,7 @@ class User {
             return false;
         }
 
-        $stmt->bind_param("s", $username);
+        $stmt->bind_param("sss", $username, $username, $username);
         $stmt->execute();
 
         $result = $stmt->get_result();
@@ -67,13 +70,39 @@ class User {
         }
 
         $user = $result->fetch_assoc();
+        $stmt->close();
 
-        // Verify password
-        if (password_verify($password, $user["user_password"])) {
-            return $user;  // Login success
+        // Verify password - handle both hashed and plain text for migration purposes
+        $storedPassword = $user["user_password"];
+        
+        // First try password_verify (for hashed passwords)
+        if (password_verify($password, $storedPassword)) {
+            return $user;  // Login success with hashed password
+        }
+        
+        // Fallback: check if password matches plain text (for old accounts without hashing)
+        if ($password === $storedPassword) {
+            // Auto-upgrade to hashed password
+            $this->upgradePasswordHash($user['id'], $password);
+            return $user;  // Login success with plain text password (will be upgraded)
         }
 
         return false; // Wrong password
+    }
+
+    /* ===========================
+        UPGRADE PASSWORD HASH
+    ============================ */
+    private function upgradePasswordHash($user_id, $plainPassword) {
+        $hashed = password_hash($plainPassword, PASSWORD_DEFAULT);
+        
+        $stmt = $this->conn->prepare("UPDATE users SET user_password = ? WHERE id = ?");
+        if ($stmt) {
+            $stmt->bind_param("si", $hashed, $user_id);
+            $stmt->execute();
+            $stmt->close();
+            error_log("Password upgraded to hash for user ID: $user_id");
+        }
     }
 
 

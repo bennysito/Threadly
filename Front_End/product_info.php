@@ -149,6 +149,29 @@ $categoryName       = $product['category'] ?? 'Products';
 $description        = $product['description'] ?? 'No description available.';
 $quantity           = $product['availability'] ?? 'available';
 
+// === 3.5 Check if Bidding is Enabled ===
+$biddingEnabled = false;
+if ($productId && file_exists(__DIR__ . '/../Back_End/Models/Database.php')) {
+    require_once __DIR__ . '/../Back_End/Models/Database.php';
+    $db = new Database();
+    $conn = $db->threadly_connect;
+    
+    // Check if bidding column exists and is enabled
+    $colRes = $conn->query("SHOW COLUMNS FROM products LIKE 'bidding'");
+    if ($colRes && $colRes->num_rows > 0) {
+        $stmt = $conn->prepare("SELECT bidding FROM products WHERE product_id = ?");
+        if ($stmt) {
+            $stmt->bind_param('i', $productId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+            $biddingEnabled = ($row && $row['bidding'] == 1);
+            $stmt->close();
+        }
+    }
+    $db->close_db();
+}
+
 // === 4. CHECK WISHLIST STATUS (NEW/FIXED LOGIC) ===
 $isProductInWishlist = false;
 
@@ -269,6 +292,53 @@ if (isset($_SESSION['user_id']) && $productId) {
                     ADD TO BAG
                 </button>
 
+                <?php if ($biddingEnabled): ?>
+                    <div class="border-2 border-amber-500 bg-amber-50 rounded-xl p-6 mt-6">
+                        <div class="flex items-center gap-2 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-600">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.997 6.91a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0ZM9.997 12a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0ZM9.997 17.09a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0ZM15 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                            </svg>
+                            <h3 class="text-xl font-bold text-amber-900">PLACE A BID</h3>
+                        </div>
+                        
+                        <p class="text-sm text-amber-800 mb-4">Starting price: <span class="font-bold">₱<?= number_format($productPrice, 2) ?></span></p>
+
+                        <form id="bidForm" onsubmit="submitBid(event, <?= $productId ?>)" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-900 mb-2">Your Bid Amount (₱)</label>
+                                <input type="number" id="bidAmount" name="bid_amount" step="0.01" min="<?= $productPrice ?>" 
+                                    placeholder="Enter amount (minimum ₱<?= number_format($productPrice, 2) ?>)"
+                                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200"
+                                    required>
+                                <p class="text-xs text-gray-600 mt-1">Bid must be at least ₱<?= number_format($productPrice, 2) ?></p>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-900 mb-2">Message (Optional)</label>
+                                <textarea id="bidMessage" name="bid_message" rows="3" 
+                                    placeholder="Add a message for the seller..."
+                                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200 resize-none"></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full bg-amber-600 text-white py-3 rounded-lg font-bold hover:bg-amber-700 transition flex items-center justify-center gap-2 shadow-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-7H6" />
+                                </svg>
+                                PLACE BID
+                            </button>
+                        </form>
+
+                        <div id="bidStatus" class="mt-4 hidden p-3 rounded-lg text-sm font-medium"></div>
+
+                        <div id="biddingInfo" class="mt-6 pt-6 border-t border-amber-300">
+                            <p class="text-sm text-amber-800 mb-3 font-medium">Current Bidding Info:</p>
+                            <div id="bidInfoContent" class="text-sm text-amber-700 space-y-2">
+                                <p>Loading bidding information...</p>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
                 <?php if ($productSellerId && $productId): ?>
                     <section id="seller-details-section">
                         <?php render_seller_profile_card($productSellerId, $productId); ?>
@@ -326,6 +396,157 @@ if (isset($_SESSION['user_id']) && $productId) {
     <script>
         const CURRENT_PRODUCT_ID = <?= $productId ?? 'null' ?>;
         const CURRENT_SELLER_ID = <?= $productSellerId ?? 'null' ?>;
+        const BIDDING_ENABLED = <?= $biddingEnabled ? 'true' : 'false' ?>;
+        const PRODUCT_PRICE = <?= $productPrice ?>;
+    </script>
+    
+    <script>
+        /**
+         * Submit a bid on the product
+         */
+        function submitBid(event, productId) {
+            event.preventDefault();
+            
+            if (!productId) {
+                alert('No product selected');
+                return;
+            }
+
+            // Check if user is logged in
+            if (!<?= isset($_SESSION['user_id']) ? 'true' : 'false' ?>) {
+                alert('Please log in to place a bid');
+                window.location.href = 'login.php';
+                return;
+            }
+
+            const bidAmount = document.getElementById('bidAmount').value;
+            const bidMessage = document.getElementById('bidMessage').value;
+            const statusDiv = document.getElementById('bidStatus');
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+
+            // Validate bid amount
+            if (!bidAmount || isNaN(bidAmount) || parseFloat(bidAmount) < PRODUCT_PRICE) {
+                statusDiv.className = 'mt-4 p-3 rounded-lg text-sm font-medium bg-red-100 text-red-700';
+                statusDiv.textContent = 'Bid amount must be at least ₱' + PRODUCT_PRICE.toFixed(2);
+                statusDiv.classList.remove('hidden');
+                return;
+            }
+
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Placing bid...';
+            statusDiv.classList.add('hidden');
+
+            // Send bid to server
+            fetch('place_bid.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'product_id=' + encodeURIComponent(productId) + 
+                      '&bid_amount=' + encodeURIComponent(bidAmount) +
+                      '&bid_message=' + encodeURIComponent(bidMessage)
+            })
+            .then(r => r.json())
+            .then(data => {
+                statusDiv.classList.remove('hidden');
+                
+                if (data.success) {
+                    statusDiv.className = 'mt-4 p-3 rounded-lg text-sm font-medium bg-green-100 text-green-700';
+                    statusDiv.textContent = '✅ ' + data.message;
+                    
+                    // Reset form
+                    document.getElementById('bidForm').reset();
+                    
+                    // Reload bid info
+                    loadBidInfo(productId);
+                    
+                    // Re-enable button after 2 seconds
+                    setTimeout(() => {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'PLACE BID';
+                    }, 2000);
+                } else {
+                    statusDiv.className = 'mt-4 p-3 rounded-lg text-sm font-medium bg-red-100 text-red-700';
+                    statusDiv.textContent = '❌ ' + (data.message || 'Failed to place bid');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'PLACE BID';
+                }
+            })
+            .catch(err => {
+                console.error('Bid error:', err);
+                statusDiv.className = 'mt-4 p-3 rounded-lg text-sm font-medium bg-red-100 text-red-700';
+                statusDiv.textContent = '❌ Network error while placing bid';
+                statusDiv.classList.remove('hidden');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'PLACE BID';
+            });
+        }
+
+        /**
+         * Load bidding information for the product
+         */
+        function loadBidInfo(productId) {
+            if (!productId) return;
+
+            fetch('get_bids.php?product_id=' + encodeURIComponent(productId))
+            .then(r => r.json())
+            .then(data => {
+                if (!data.success) return;
+
+                const content = document.getElementById('bidInfoContent');
+                if (!content) return;
+
+                let html = '';
+
+                // Highest bid
+                if (data.highest_bid) {
+                    html += '<div class="bg-amber-100 p-2 rounded">';
+                    html += '<p class="font-semibold">💰 Highest Bid: ₱' + parseFloat(data.highest_bid.bid_amount).toFixed(2) + '</p>';
+                    html += '</div>';
+                } else {
+                    html += '<p>No bids yet. Be the first to bid!</p>';
+                }
+
+                // Total bids count
+                if (data.all_bids_count > 0) {
+                    html += '<p>Total bids: <span class="font-semibold">' + data.all_bids_count + '</span></p>';
+                }
+
+                // User's bid
+                if (data.user_bid) {
+                    html += '<div class="bg-green-100 p-2 rounded mt-2">';
+                    html += '<p class="font-semibold">✓ Your Bid: ₱' + parseFloat(data.user_bid.bid_amount).toFixed(2) + '</p>';
+                    html += '<p class="text-xs">Status: ' + (data.user_bid.bid_status || 'Pending') + '</p>';
+                    if (data.user_bid.bid_message) {
+                        html += '<p class="text-xs italic">Message: ' + htmlEscape(data.user_bid.bid_message) + '</p>';
+                    }
+                    html += '</div>';
+                }
+
+                content.innerHTML = html;
+            })
+            .catch(err => console.error('Error loading bid info:', err));
+        }
+
+        /**
+         * Escape HTML special characters
+         */
+        function htmlEscape(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Load bid info when page loads (if bidding is enabled)
+        document.addEventListener('DOMContentLoaded', function() {
+            if (BIDDING_ENABLED && CURRENT_PRODUCT_ID) {
+                loadBidInfo(CURRENT_PRODUCT_ID);
+                
+                // Refresh bid info every 10 seconds
+                setInterval(() => {
+                    loadBidInfo(CURRENT_PRODUCT_ID);
+                }, 10000);
+            }
+        });
     </script>
     
     <script>

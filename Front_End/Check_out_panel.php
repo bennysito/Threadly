@@ -12,7 +12,7 @@ if (session_status() == PHP_SESSION_NONE) {
 require "nav_bar.php"; 
 
 // --- PHP Data Fetching and Calculation ---
-$cartItems = $_SESSION['cart'] ?? [];
+$cartItems = $_SESSION['shopping_bag'] ?? [];
 $productsInCart = [];
 $merchandiseSubtotal = 0;
 $shippingFee = 12.00; // Fixed shipping fee
@@ -23,11 +23,11 @@ if (!empty($cartItems)) {
     foreach ($cartItems as $ci) {
         // Normalize structure expected by the template
         $productsInCart[] = [
-            'id' => $ci['id'] ?? ($ci['product_id'] ?? null),
-            'name' => $ci['name'] ?? ($ci['product_name'] ?? 'Unknown'),
+            'id' => $ci['product_id'] ?? null,
+            'name' => $ci['product_name'] ?? 'Unknown',
             'price' => floatval($ci['price'] ?? 0),
-            'qty' => intval($ci['qty'] ?? 1),
-            'total' => floatval($ci['total'] ?? (($ci['price'] ?? 0) * ($ci['qty'] ?? 1))),
+            'qty' => intval($ci['quantity'] ?? 1),
+            'total' => floatval($ci['total'] ?? (($ci['price'] ?? 0) * ($ci['quantity'] ?? 1))),
             'image_url' => $ci['image_url'] ?? '',
             'checked' => true,
         ];
@@ -76,6 +76,15 @@ $totalPayment = $merchandiseSubtotal + $shippingFee;
         }
     </script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-chewy {
+            font-family: 'Chewy', cursive;
+        }
+    </style>
 </head>
 <body class="min-h-screen bg-white p-4 font-sans"> 
 
